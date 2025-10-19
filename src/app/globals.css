@@ -1,26 +1,70 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* FoxFund Color Palette */
+  --fox-brown: #8B4513;
+  --fox-gold: #D4AF37;
+  --fox-orange: #FF8C42;
+  --fox-ivory: #F8F4E6;
+  --fox-cream: #F5F1DC;
+  --fox-white: #FFFFFF;
+  --fox-black: #1A1A1A;
+  
+  /* Semantic colors - Light mode */
+  --background: var(--fox-white);
+  --foreground: var(--fox-black);
+  --primary: var(--fox-brown);
+  --secondary: var(--fox-gold);
+  --accent: var(--fox-orange);
+  --muted: var(--fox-ivory);
+  --card: var(--fox-cream);
+  --border: #E5E5E5;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    /* Dark mode colors */
+    --background: var(--fox-black);
+    --foreground: var(--fox-ivory);
+    --primary: #A86A3D;
+    --secondary: #E6C875;
+    --accent: #FF9E64;
+    --muted: #2A2A2A;
+    --card: #333333;
+    --border: #404040;
   }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+}
+
+/* Custom gradient for title */
+.fox-gradient {
+  background: linear-gradient(135deg, var(--fox-brown) 0%, var(--fox-gold) 50%, var(--fox-orange) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-family: var(--font-sevillana), cursive;
+}
+
+/* Utility classes for fonts */
+.font-title {
+  font-family: var(--font-sevillana), cursive;
+}
+
+.font-heading {
+  font-family: var(--font-courgette), cursive;
+}
+
+.font-button {
+  font-family: var(--font-belgrano), serif;
+}
+
+.font-accent {
+  font-family: var(--font-niconne), cursive;
 }
