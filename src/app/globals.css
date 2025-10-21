@@ -57,31 +57,24 @@ html, body {
 
 body {
   color: var(--foreground);
-  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
 }
 
-/* Custom gradient for title */
+
 .fox-gradient {
   background: linear-gradient(135deg, var(--fox-brown) 0%, var(--fox-gold) 50%, var(--fox-orange) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+
+.navbar-title-huge {
   font-family: var(--font-sevillana), cursive;
+  font-size: 4.5rem; /* Reduced from 6rem */
+  line-height: 1;
 }
 
-/* Utility classes for fonts */
-.font-title {
+.navbar-title-large {
   font-family: var(--font-sevillana), cursive;
-}
-
-.font-heading {
-  font-family: var(--font-courgette), cursive;
-}
-
-.font-button {
-  font-family: var(--font-belgrano), serif;
-}
-
-.font-accent {
-  font-family: var(--font-niconne), cursive;
+  font-size: 3rem; /* Reduced from 4rem */
+  line-height: 1;
 }
