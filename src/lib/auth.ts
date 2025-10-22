@@ -69,4 +69,7 @@ export const authOptions: NextAuthOptions = {
       return token;
     },
   },
+  pages: {
+    signIn: '/login', // Custom login page
+  },
 };
