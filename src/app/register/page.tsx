@@ -1,7 +1,6 @@
 // file: src/app/register/page.tsx
 'use client'
 
-import { signIn } from 'next-auth/react'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
@@ -19,7 +18,6 @@ export default function RegisterPage() {
 
     try {
       // For now, just redirect to login - we'll handle registration later
-      // Or we can implement registration directly in this component
       alert('Registration will be implemented soon. For now, use the demo account or implement your own registration.')
       router.push('/login')
     } catch (error) {
@@ -31,9 +29,10 @@ export default function RegisterPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
+      {/* Main container with your theme - matching login page */}
+      <div className="fox-card max-w-md w-full p-8">
         <div className="text-center">
-          <h2 className="mt-6 text-4xl font-heading text-[#8B4513] dark:text-[#E6C875]">
+          <h2 className="text-4xl font-heading text-[#8B4513] dark:text-[#E6C875]">
             Create your FoxFund account
           </h2>
         </div>
@@ -48,7 +47,7 @@ export default function RegisterPage() {
               type="text"
               autoComplete="name"
               required
-              className="relative block w-full px-3 py-4 border border-[#8B4513] dark:border-[#A86A3D] placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D4AF37] focus:border-[#D4AF37] bg-white dark:bg-gray-800 dark:text-white"
+              className="fox-input"
               placeholder="Full Name"
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -64,7 +63,7 @@ export default function RegisterPage() {
               type="email"
               autoComplete="email"
               required
-              className="relative block w-full px-3 py-4 border border-[#8B4513] dark:border-[#A86A3D] placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D4AF37] focus:border-[#D4AF37] bg-white dark:bg-gray-800 dark:text-white"
+              className="fox-input"
               placeholder="Email address"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -80,7 +79,7 @@ export default function RegisterPage() {
               type="password"
               autoComplete="new-password"
               required
-              className="relative block w-full px-3 py-4 border border-[#8B4513] dark:border-[#A86A3D] placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D4AF37] focus:border-[#D4AF37] bg-white dark:bg-gray-800 dark:text-white"
+              className="fox-input"
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -96,7 +95,7 @@ export default function RegisterPage() {
             </button>
           </div>
         </form>
-        <p className="text-center">
+        <p className="text-center mt-6">
           <Link href="/login" className="font-button text-[#8B4513] dark:text-[#E6C875] hover:text-[#FF8C42] dark:hover:text-[#FF9E64] transition-colors">
             Already have an account? Sign in
           </Link>
