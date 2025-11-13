@@ -37,9 +37,10 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
+      {/* Main container with your theme */}
+      <div className="fox-card max-w-md w-full p-8">
         <div className="text-center">
-          <h2 className="mt-6 text-4xl font-heading text-[#8B4513] dark:text-[#E6C875]">
+          <h2 className="text-4xl font-heading text-[#8B4513] dark:text-[#E6C875]">
             Sign in to FoxFund
           </h2>
         </div>
@@ -54,7 +55,7 @@ export default function LoginPage() {
               type="email"
               autoComplete="email"
               required
-              className="relative block w-full px-3 py-4 border border-[#8B4513] dark:border-[#A86A3D] placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D4AF37] focus:border-[#D4AF37] bg-white dark:bg-gray-800 dark:text-white"
+              className="fox-input"
               placeholder="Email address"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -70,7 +71,7 @@ export default function LoginPage() {
               type="password"
               autoComplete="current-password"
               required
-              className="relative block w-full px-3 py-4 border border-[#8B4513] dark:border-[#A86A3D] placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D4AF37] focus:border-[#D4AF37] bg-white dark:bg-gray-800 dark:text-white"
+              className="fox-input"
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -86,7 +87,7 @@ export default function LoginPage() {
             </button>
           </div>
         </form>
-        <p className="text-center">
+        <p className="text-center mt-6">
           <Link href="/register" className="font-button text-[#8B4513] dark:text-[#E6C875] hover:text-[#FF8C42] dark:hover:text-[#FF9E64] transition-colors">
             Don't have an account? Sign up
           </Link>

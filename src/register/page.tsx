@@ -1,6 +1,7 @@
 // file: src/app/register/page.tsx
 'use client'
 
+import { signIn } from 'next-auth/react'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
@@ -17,20 +18,10 @@ export default function RegisterPage() {
     setLoading(true)
 
     try {
-      const response = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password, name }),
-      })
-
-      if (response.ok) {
-        router.push('/login?message=Account created successfully')
-      } else {
-        const error = await response.json()
-        alert(error.error || 'Registration failed')
-      }
+      // For now, just redirect to login - we'll handle registration later
+      // Or we can implement registration directly in this component
+      alert('Registration will be implemented soon. For now, use the demo account or implement your own registration.')
+      router.push('/login')
     } catch (error) {
       alert('Registration failed')
     } finally {
