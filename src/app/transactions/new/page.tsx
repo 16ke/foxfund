@@ -82,10 +82,11 @@ export default function NewTransactionPage() {
     <div className="min-h-screen p-4">
       <div className="max-w-2xl mx-auto">
         <div className="mb-8">
-          <Link href="/transactions" className="text-[#8B4513] dark:text-[#E6C875] hover:text-[#FF8C42] dark:hover:text-[#FF9E64] transition-colors font-button">
+          <Link href="/transactions" className="text-[#F8F4E6] dark:text-[#E6C875] hover:text-[#FF8C42] dark:hover:text-[#FF9E64] transition-colors font-button">
             ← Back to Transactions
           </Link>
-          <h1 className="text-4xl font-heading text-[#8B4513] dark:text-[#E6C875] mt-4">
+          {/* FIXED: Main heading white in day mode, brown in dark mode */}
+          <h1 className="text-4xl font-heading text-[#F8F4E6] dark:text-[#A86A3D] mt-4">
             Add Transaction
           </h1>
         </div>
@@ -95,7 +96,7 @@ export default function NewTransactionPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Amount */}
               <div>
-                <label className="block text-lg font-heading text-[#8B4513] dark:text-[#E6C875] mb-2">
+                <label className="block text-lg font-heading text-[#A86A3D] dark:text-[#E6C875] mb-2">
                   Amount *
                 </label>
                 <input
@@ -112,7 +113,7 @@ export default function NewTransactionPage() {
 
               {/* Type */}
               <div>
-                <label className="block text-lg font-heading text-[#8B4513] dark:text-[#E6C875] mb-2">
+                <label className="block text-lg font-heading text-[#A86A3D] dark:text-[#E6C875] mb-2">
                   Type *
                 </label>
                 <select
@@ -129,7 +130,7 @@ export default function NewTransactionPage() {
 
               {/* Date */}
               <div>
-                <label className="block text-lg font-heading text-[#8B4513] dark:text-[#E6C875] mb-2">
+                <label className="block text-lg font-heading text-[#A86A3D] dark:text-[#E6C875] mb-2">
                   Date *
                 </label>
                 <input
@@ -144,7 +145,7 @@ export default function NewTransactionPage() {
 
               {/* Currency */}
               <div>
-                <label className="block text-lg font-heading text-[#8B4513] dark:text-[#E6C875] mb-2">
+                <label className="block text-lg font-heading text-[#A86A3D] dark:text-[#E6C875] mb-2">
                   Currency
                 </label>
                 <select
@@ -162,7 +163,7 @@ export default function NewTransactionPage() {
 
             {/* Description */}
             <div>
-              <label className="block text-lg font-heading text-[#8B4513] dark:text-[#E6C875] mb-2">
+              <label className="block text-lg font-heading text-[#A86A3D] dark:text-[#E6C875] mb-2">
                 Description
               </label>
               <input
@@ -177,7 +178,7 @@ export default function NewTransactionPage() {
 
             {/* Merchant */}
             <div>
-              <label className="block text-lg font-heading text-[#8B4513] dark:text-[#E6C875] mb-2">
+              <label className="block text-lg font-heading text-[#A86A3D] dark:text-[#E6C875] mb-2">
                 Merchant
               </label>
               <input
@@ -192,7 +193,7 @@ export default function NewTransactionPage() {
 
             {/* Category */}
             <div>
-              <label className="block text-lg font-heading text-[#8B4513] dark:text-[#E6C875] mb-2">
+              <label className="block text-lg font-heading text-[#A86A3D] dark:text-[#E6C875] mb-2">
                 Category
               </label>
               <select
@@ -221,7 +222,7 @@ export default function NewTransactionPage() {
               </button>
               <Link
                 href="/transactions"
-                className="px-8 py-3 border-2 border-[#8B4513] dark:border-[#A86A3D] text-[#8B4513] dark:text-[#E6C875] rounded-lg hover:bg-[#8B4513] hover:text-white dark:hover:bg-[#A86A3D] dark:hover:text-white transition-colors font-button text-lg"
+                className="px-8 py-3 border-2 border-[#8B4513] dark:border-[#A86A3D] text-[#F8F4E6] dark:text-[#E6C875] rounded-lg hover:bg-[#8B4513] hover:text-white dark:hover:bg-[#A86A3D] dark:hover:text-white transition-colors font-button text-lg"
               >
                 Cancel
               </Link>

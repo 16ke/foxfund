@@ -53,7 +53,7 @@ export default function DashboardPage() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="text-2xl font-heading text-[#8B4513] dark:text-[#E6C875]">
+        <div className="text-2xl font-heading text-[#A86A3D] dark:text-[#E6C875]">
           Loading...
         </div>
       </div>
@@ -69,58 +69,55 @@ export default function DashboardPage() {
     <div className="min-h-screen p-4">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-heading text-[#8B4513] dark:text-[#E6C875]">
+          <h1 className="text-4xl font-heading text-[#F8F4E6] dark:text-[#A86A3D]">
             Your Dashboard
           </h1>
-          <p className="text-lg text-gray-600 dark:text-gray-300 mt-2">
+          <p className="text-lg text-[#F8F4E6] dark:text-[#8B4513] mt-2">
             Overview of your finances
           </p>
         </div>
 
-        {/* Stats Cards Row */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <div className="fox-card text-center">
-            <h3 className="text-2xl font-heading text-[#8B4513] dark:text-[#E6C875]">Total Balance</h3>
+            <h3 className="text-2xl font-heading text-[#A86A3D] dark:text-[#E6C875]">Total Balance</h3>
             <p className={`text-3xl font-bold mt-2 ${summary.balance >= 0 ? 'text-green-600' : 'text-red-600'}`}>
               ${summary.balance.toFixed(2)}
             </p>
           </div>
           
           <div className="fox-card text-center">
-            <h3 className="text-2xl font-heading text-[#8B4513] dark:text-[#E6C875]">Income</h3>
+            <h3 className="text-2xl font-heading text-[#A86A3D] dark:text-[#E6C875]">Income</h3>
             <p className="text-3xl font-bold mt-2 text-green-600">
               ${summary.income.toFixed(2)}
             </p>
           </div>
           
           <div className="fox-card text-center">
-            <h3 className="text-2xl font-heading text-[#8B4513] dark:text-[#E6C875]">Expenses</h3>
+            <h3 className="text-2xl font-heading text-[#A86A3D] dark:text-[#E6C875]">Expenses</h3>
             <p className="text-3xl font-bold mt-2 text-red-600">
               ${summary.expenses.toFixed(2)}
             </p>
           </div>
         </div>
 
-        {/* Charts Row */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="fox-card">
-            <h3 className="text-2xl font-heading text-[#8B4513] dark:text-[#E6C875] mb-4">Spending by Category</h3>
+            <h3 className="text-2xl font-heading text-[#A86A3D] dark:text-[#E6C875] mb-4">Spending by Category</h3>
             <div className="h-64 flex items-center justify-center text-gray-500">
               {data?.spendingByCategory.length ? 'Pie Chart - Data Ready' : 'No spending data yet'}
             </div>
           </div>
           
           <div className="fox-card">
-            <h3 className="text-2xl font-heading text-[#8B4513] dark:text-[#E6C875] mb-4">Monthly Trend</h3>
+            <h3 className="text-2xl font-heading text-[#A86A3D] dark:text-[#E6C875] mb-4">Monthly Trend</h3>
             <div className="h-64 flex items-center justify-center text-gray-500">
               Line Chart - Coming Soon
             </div>
           </div>
         </div>
 
-        {/* Recent Transactions */}
         <div className="fox-card mt-6">
-          <h3 className="text-2xl font-heading text-[#8B4513] dark:text-[#E6C875] mb-4">Recent Transactions</h3>
+          <h3 className="text-2xl font-heading text-[#A86A3D] dark:text-[#E6C875] mb-4">Recent Transactions</h3>
           {recentTransactions.length > 0 ? (
             <div className="space-y-2">
               {recentTransactions.map((transaction) => (

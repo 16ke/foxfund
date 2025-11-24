@@ -40,7 +40,7 @@ export default function TransactionsPage() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="text-2xl font-heading text-[#8B4513] dark:text-[#E6C875]">
+        <div className="text-2xl font-heading text-[#A86A3D] dark:text-[#E6C875]">
           Loading...
         </div>
       </div>
@@ -52,10 +52,11 @@ export default function TransactionsPage() {
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
           <div>
-            <h1 className="text-4xl font-heading text-[#8B4513] dark:text-[#E6C875]">
+            {/* FIXED: Main headings white in day mode, brown in dark mode */}
+            <h1 className="text-4xl font-heading text-[#F8F4E6] dark:text-[#A86A3D]">
               Transactions
             </h1>
-            <p className="text-lg text-gray-600 dark:text-gray-300 mt-2">
+            <p className="text-lg text-[#F8F4E6] dark:text-[#8B4513] mt-2">
               Manage your income and expenses
             </p>
           </div>
@@ -73,11 +74,12 @@ export default function TransactionsPage() {
               <table className="w-full">
                 <thead>
                   <tr className="border-b-2 border-[#8B4513] dark:border-[#A86A3D]">
-                    <th className="text-left p-4 font-heading text-[#8B4513] dark:text-[#E6C875]">Date</th>
-                    <th className="text-left p-4 font-heading text-[#8B4513] dark:text-[#E6C875]">Description</th>
-                    <th className="text-left p-4 font-heading text-[#8B4513] dark:text-[#E6C875]">Category</th>
-                    <th className="text-left p-4 font-heading text-[#8B4513] dark:text-[#E6C875]">Amount</th>
-                    <th className="text-left p-4 font-heading text-[#8B4513] dark:text-[#E6C875]">Actions</th>
+                    {/* RESTORED: Table headers stay brown in day, gold in dark */}
+                    <th className="text-left p-4 font-heading text-[#A86A3D] dark:text-[#E6C875]">Date</th>
+                    <th className="text-left p-4 font-heading text-[#A86A3D] dark:text-[#E6C875]">Description</th>
+                    <th className="text-left p-4 font-heading text-[#A86A3D] dark:text-[#E6C875]">Category</th>
+                    <th className="text-left p-4 font-heading text-[#A86A3D] dark:text-[#E6C875]">Amount</th>
+                    <th className="text-left p-4 font-heading text-[#A86A3D] dark:text-[#E6C875]">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
