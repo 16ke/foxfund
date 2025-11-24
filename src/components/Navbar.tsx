@@ -5,10 +5,12 @@ import Link from 'next/link'
 import { useSession, signOut } from 'next-auth/react'
 import { useState, useEffect } from 'react'
 import { Sun, Moon, LogOut } from 'lucide-react'
+import { useRouter } from 'next/navigation' // ADD THIS IMPORT
 
 export default function Navbar() {
   const { data: session } = useSession()
   const [darkMode, setDarkMode] = useState(false)
+  const router = useRouter() // ADD THIS
 
   useEffect(() => {
     const isDark = localStorage.theme === 'dark' || 
@@ -35,8 +37,9 @@ export default function Navbar() {
     }
   }
 
-  const handleLogout = () => {
-    signOut()
+  const handleLogout = async () => {
+    await signOut({ redirect: false }) // ADD AWAIT AND redirect: false
+    router.push('/login') // ADD THIS REDIRECT
   }
 
   return (
