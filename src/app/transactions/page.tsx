@@ -3,6 +3,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
 interface Transaction {
   id: string
@@ -18,6 +19,7 @@ interface Transaction {
 export default function TransactionsPage() {
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [loading, setLoading] = useState(true)
+  const router = useRouter()
 
   useEffect(() => {
     const fetchTransactions = async () => {
@@ -37,6 +39,32 @@ export default function TransactionsPage() {
     fetchTransactions()
   }, [])
 
+  const handleDelete = async (transactionId: string) => {
+    if (!confirm('Are you sure you want to delete this transaction?')) {
+      return
+    }
+
+    try {
+      const response = await fetch(`/api/transactions/${transactionId}`, {
+        method: 'DELETE',
+      })
+
+      if (response.ok) {
+        // Refresh the transactions list
+        const updatedResponse = await fetch('/api/transactions')
+        if (updatedResponse.ok) {
+          const data = await updatedResponse.json()
+          setTransactions(data)
+        }
+      } else {
+        const error = await response.json()
+        alert(error.error || 'Failed to delete transaction')
+      }
+    } catch (error) {
+      alert('Failed to delete transaction')
+    }
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -52,7 +80,6 @@ export default function TransactionsPage() {
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
           <div>
-            {/* FIXED: Main headings white in day mode, brown in dark mode */}
             <h1 className="text-4xl font-heading text-[#F8F4E6] dark:text-[#A86A3D]">
               Transactions
             </h1>
@@ -74,7 +101,6 @@ export default function TransactionsPage() {
               <table className="w-full">
                 <thead>
                   <tr className="border-b-2 border-[#8B4513] dark:border-[#A86A3D]">
-                    {/* RESTORED: Table headers stay brown in day, gold in dark */}
                     <th className="text-left p-4 font-heading text-[#A86A3D] dark:text-[#E6C875]">Date</th>
                     <th className="text-left p-4 font-heading text-[#A86A3D] dark:text-[#E6C875]">Description</th>
                     <th className="text-left p-4 font-heading text-[#A86A3D] dark:text-[#E6C875]">Category</th>
@@ -119,10 +145,16 @@ export default function TransactionsPage() {
                       </td>
                       <td className="p-4">
                         <div className="flex gap-2">
-                          <button className="text-[#8B4513] dark:text-[#E6C875] hover:text-[#FF8C42] dark:hover:text-[#FF9E64] transition-colors">
+                          <Link 
+                            href={`/transactions/${transaction.id}/edit`}
+                            className="text-[#8B4513] dark:text-[#E6C875] hover:text-[#FF8C42] dark:hover:text-[#FF9E64] transition-colors"
+                          >
                             Edit
-                          </button>
-                          <button className="text-red-600 hover:text-red-800 transition-colors">
+                          </Link>
+                          <button 
+                            onClick={() => handleDelete(transaction.id)}
+                            className="text-red-600 hover:text-red-800 transition-colors"
+                          >
                             Delete
                           </button>
                         </div>
