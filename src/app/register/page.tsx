@@ -17,9 +17,20 @@ export default function RegisterPage() {
     setLoading(true)
 
     try {
-      // For now, just redirect to login - we'll handle registration later
-      alert('Registration will be implemented soon. For now, use the demo account or implement your own registration.')
-      router.push('/login')
+      const response = await fetch('/api/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password, name }),
+      })
+
+      if (response.ok) {
+        router.push('/login?message=Account created successfully')
+      } else {
+        const error = await response.json()
+        alert(error.error || 'Registration failed')
+      }
     } catch (error) {
       alert('Registration failed')
     } finally {
@@ -29,7 +40,6 @@ export default function RegisterPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      {/* Main container with your theme - matching login page */}
       <div className="fox-card max-w-md w-full p-8">
         <div className="text-center">
           <h2 className="text-4xl font-heading text-[#8B4513] dark:text-[#E6C875]">
