@@ -54,14 +54,30 @@ export default function BudgetsPage() {
     fetchData()
   }, [])
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-2xl font-heading text-[#A86A3D] dark:text-[#E6C875]">
-          Loading...
-        </div>
-      </div>
-    )
+  const handleDelete = async (budgetId: string, categoryName: string) => {
+    if (!confirm(`Are you sure you want to delete the budget for "${categoryName}"?`)) {
+      return
+    }
+
+    try {
+      const response = await fetch(`/api/budgets/${budgetId}`, {
+        method: 'DELETE',
+      })
+
+      if (response.ok) {
+        // Refresh the budgets list
+        const updatedResponse = await fetch('/api/budgets')
+        if (updatedResponse.ok) {
+          const data = await updatedResponse.json()
+          setBudgets(data)
+        }
+      } else {
+        const error = await response.json()
+        alert(error.error || 'Failed to delete budget')
+      }
+    } catch (error) {
+      alert('Failed to delete budget')
+    }
   }
 
   // Get current month and year
@@ -73,6 +89,16 @@ export default function BudgetsPage() {
   const currentBudgets = budgets.filter(
     budget => budget.month === currentMonth && budget.year === currentYear
   )
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-2xl font-heading text-[#A86A3D] dark:text-[#E6C875]">
+          Loading...
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen p-4">
@@ -137,10 +163,16 @@ export default function BudgetsPage() {
                       </div>
 
                       <div className="flex gap-2">
-                        <button className="text-[#8B4513] dark:text-[#E6C875] hover:text-[#FF8C42] dark:hover:text-[#FF9E64] transition-colors">
+                        <Link 
+                          href={`/budgets/${budget.id}/edit`}
+                          className="text-[#8B4513] dark:text-[#E6C875] hover:text-[#FF8C42] dark:hover:text-[#FF9E64] transition-colors"
+                        >
                           Edit
-                        </button>
-                        <button className="text-red-600 hover:text-red-800 transition-colors">
+                        </Link>
+                        <button 
+                          onClick={() => handleDelete(budget.id, budget.category.name)}
+                          className="text-red-600 hover:text-red-800 transition-colors"
+                        >
                           Delete
                         </button>
                       </div>
