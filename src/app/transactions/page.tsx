@@ -132,6 +132,34 @@ export default function TransactionsPage() {
     }
   }
 
+  const handleExport = async () => {
+    try {
+      // Build query string from current filters
+      const params = new URLSearchParams()
+      if (dateRange.start) params.append('startDate', dateRange.start)
+      if (dateRange.end) params.append('endDate', dateRange.end)
+      if (selectedCategory) params.append('categoryId', selectedCategory)
+
+      const response = await fetch(`/api/transactions/export?${params.toString()}`)
+      
+      if (response.ok) {
+        const blob = await response.blob()
+        const url = window.URL.createObjectURL(blob)
+        const a = document.createElement('a')
+        a.style.display = 'none'
+        a.href = url
+        a.download = `transactions-${new Date().toISOString().split('T')[0]}.csv`
+        document.body.appendChild(a)
+        a.click()
+        window.URL.revokeObjectURL(url)
+      } else {
+        alert('Failed to export transactions')
+      }
+    } catch (error) {
+      alert('Failed to export transactions')
+    }
+  }
+
   const clearFilters = () => {
     setSearchTerm('')
     setSelectedCategory('')
@@ -177,14 +205,23 @@ export default function TransactionsPage() {
             <h3 className="text-xl font-heading text-[#A86A3D] dark:text-[#E6C875]">
               Filters & Search
             </h3>
-            {hasActiveFilters && (
+            <div className="flex gap-4 items-center">
+              {hasActiveFilters && (
+                <button
+                  onClick={clearFilters}
+                  className="text-sm text-[#8B4513] dark:text-[#E6C875] hover:text-[#FF8C42] dark:hover:text-[#FF9E64] transition-colors"
+                >
+                  Clear All Filters
+                </button>
+              )}
               <button
-                onClick={clearFilters}
-                className="text-sm text-[#8B4513] dark:text-[#E6C875] hover:text-[#FF8C42] dark:hover:text-[#FF9E64] transition-colors"
+                onClick={handleExport}
+                disabled={filteredTransactions.length === 0}
+                className="text-sm bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
-                Clear All Filters
+                Export CSV
               </button>
-            )}
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
