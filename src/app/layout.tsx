@@ -54,8 +54,12 @@ export default function RootLayout({
     <html lang="en" className="light">
       <body className={`${geistSans.variable} ${geistMono.variable} ${sevillana.variable} ${courgette.variable} ${belgrano.variable} ${niconne.variable} antialiased`}>
         <AuthProvider>
-          <Navbar />
-          {children}
+          <div className="flex flex-col md:flex-row min-h-screen">
+            <Navbar />
+            <main className="flex-1 md:ml-0">
+              {children}
+            </main>
+          </div>
         </AuthProvider>
       </body>
     </html>
