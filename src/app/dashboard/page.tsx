@@ -2,7 +2,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts'
+import { PieChart, Pie, Cell, ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts'
 
 interface DashboardData {
   summary: {
@@ -204,7 +204,7 @@ export default function DashboardPage() {
             )}
           </div>
           
-          {/* Monthly Trend Bar Chart */}
+          {/* Monthly Trend Line Chart */}
           <div className="fox-card">
             <h3 className="text-2xl font-heading text-[#A86A3D] dark:text-[#E6C875] mb-4">
               Monthly Trend
@@ -212,17 +212,29 @@ export default function DashboardPage() {
             {hasTrendData ? (
               <div className="h-64">
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={monthlyTrend}>
+                  <LineChart data={monthlyTrend}>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="month" />
                     <YAxis />
-                    <Tooltip 
-                      formatter={(value: number) => [`$${value.toFixed(2)}`, 'Amount']}
-                    />
+                    <Tooltip formatter={(value: number) => [`$${value.toFixed(2)}`, 'Amount']} />
                     <Legend />
-                    <Bar dataKey="income" fill="#10B981" name="Income" />
-                    <Bar dataKey="expenses" fill="#EF4444" name="Expenses" />
-                  </BarChart>
+                    <Line 
+                      type="monotone" 
+                      dataKey="income" 
+                      stroke="#10B981" 
+                      strokeWidth={2} 
+                      name="Income" 
+                      dot={{ fill: '#10B981', strokeWidth: 2 }}
+                    />
+                    <Line 
+                      type="monotone" 
+                      dataKey="expenses" 
+                      stroke="#EF4444" 
+                      strokeWidth={2} 
+                      name="Expenses" 
+                      dot={{ fill: '#EF4444', strokeWidth: 2 }}
+                    />
+                  </LineChart>
                 </ResponsiveContainer>
               </div>
             ) : (
