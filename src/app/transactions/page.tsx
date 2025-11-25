@@ -13,31 +13,98 @@ interface Transaction {
   date: string
   description: string | null
   merchant: string | null
-  category: { name: string; color: string } | null
+  category: { id: string; name: string; color: string } | null
+}
+
+interface Category {
+  id: string
+  name: string
+  color: string
 }
 
 export default function TransactionsPage() {
   const [transactions, setTransactions] = useState<Transaction[]>([])
+  const [categories, setCategories] = useState<Category[]>([])
+  const [filteredTransactions, setFilteredTransactions] = useState<Transaction[]>([])
   const [loading, setLoading] = useState(true)
   const router = useRouter()
 
+  // Filter states
+  const [searchTerm, setSearchTerm] = useState('')
+  const [selectedCategory, setSelectedCategory] = useState('')
+  const [typeFilter, setTypeFilter] = useState('')
+  const [dateRange, setDateRange] = useState({
+    start: '',
+    end: ''
+  })
+
   useEffect(() => {
-    const fetchTransactions = async () => {
+    const fetchData = async () => {
       try {
-        const response = await fetch('/api/transactions')
-        if (response.ok) {
-          const data = await response.json()
-          setTransactions(data)
+        const [transactionsRes, categoriesRes] = await Promise.all([
+          fetch('/api/transactions'),
+          fetch('/api/categories')
+        ])
+
+        if (transactionsRes.ok) {
+          const transactionsData = await transactionsRes.json()
+          setTransactions(transactionsData)
+          setFilteredTransactions(transactionsData)
+        }
+
+        if (categoriesRes.ok) {
+          const categoriesData = await categoriesRes.json()
+          setCategories(categoriesData)
         }
       } catch (error) {
-        console.error('Failed to fetch transactions:', error)
+        console.error('Failed to fetch data:', error)
       } finally {
         setLoading(false)
       }
     }
 
-    fetchTransactions()
+    fetchData()
   }, [])
+
+  // Apply filters whenever filter states change
+  useEffect(() => {
+    let filtered = transactions
+
+    // Search filter
+    if (searchTerm) {
+      filtered = filtered.filter(transaction =>
+        transaction.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        transaction.merchant?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        transaction.category?.name.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    }
+
+    // Category filter
+    if (selectedCategory) {
+      filtered = filtered.filter(transaction =>
+        transaction.category?.id === selectedCategory
+      )
+    }
+
+    // Type filter
+    if (typeFilter) {
+      filtered = filtered.filter(transaction => transaction.type === typeFilter)
+    }
+
+    // Date range filter
+    if (dateRange.start) {
+      filtered = filtered.filter(transaction => 
+        new Date(transaction.date) >= new Date(dateRange.start)
+      )
+    }
+    if (dateRange.end) {
+      filtered = filtered.filter(transaction => 
+        new Date(transaction.date) <= new Date(dateRange.end)
+      )
+    }
+
+    setFilteredTransactions(filtered)
+  }, [transactions, searchTerm, selectedCategory, typeFilter, dateRange])
 
   const handleDelete = async (transactionId: string) => {
     if (!confirm('Are you sure you want to delete this transaction?')) {
@@ -64,6 +131,15 @@ export default function TransactionsPage() {
       alert('Failed to delete transaction')
     }
   }
+
+  const clearFilters = () => {
+    setSearchTerm('')
+    setSelectedCategory('')
+    setTypeFilter('')
+    setDateRange({ start: '', end: '' })
+  }
+
+  const hasActiveFilters = searchTerm || selectedCategory || typeFilter || dateRange.start || dateRange.end
 
   if (loading) {
     return (
@@ -95,8 +171,111 @@ export default function TransactionsPage() {
           </Link>
         </div>
 
+        {/* Filters Section */}
+        <div className="fox-card mb-6">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-4">
+            <h3 className="text-xl font-heading text-[#A86A3D] dark:text-[#E6C875]">
+              Filters & Search
+            </h3>
+            {hasActiveFilters && (
+              <button
+                onClick={clearFilters}
+                className="text-sm text-[#8B4513] dark:text-[#E6C875] hover:text-[#FF8C42] dark:hover:text-[#FF9E64] transition-colors"
+              >
+                Clear All Filters
+              </button>
+            )}
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {/* Search */}
+            <div>
+              <label className="block text-sm font-heading text-[#A86A3D] dark:text-[#E6C875] mb-2">
+                Search
+              </label>
+              <input
+                type="text"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="Search descriptions, merchants..."
+                className="fox-input text-sm"
+              />
+            </div>
+
+            {/* Category Filter */}
+            <div>
+              <label className="block text-sm font-heading text-[#A86A3D] dark:text-[#E6C875] mb-2">
+                Category
+              </label>
+              <select
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                className="fox-input text-sm"
+              >
+                <option value="">All Categories</option>
+                {categories.map(category => (
+                  <option key={category.id} value={category.id}>
+                    {category.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Type Filter */}
+            <div>
+              <label className="block text-sm font-heading text-[#A86A3D] dark:text-[#E6C875] mb-2">
+                Type
+              </label>
+              <select
+                value={typeFilter}
+                onChange={(e) => setTypeFilter(e.target.value)}
+                className="fox-input text-sm"
+              >
+                <option value="">All Types</option>
+                <option value="income">Income</option>
+                <option value="expense">Expense</option>
+              </select>
+            </div>
+
+            {/* Date Range */}
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <label className="block text-sm font-heading text-[#A86A3D] dark:text-[#E6C875] mb-2">
+                  From
+                </label>
+                <input
+                  type="date"
+                  value={dateRange.start}
+                  onChange={(e) => setDateRange(prev => ({ ...prev, start: e.target.value }))}
+                  className="fox-input text-sm"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-heading text-[#A86A3D] dark:text-[#E6C875] mb-2">
+                  To
+                </label>
+                <input
+                  type="date"
+                  value={dateRange.end}
+                  onChange={(e) => setDateRange(prev => ({ ...prev, end: e.target.value }))}
+                  className="fox-input text-sm"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Results Count */}
+          <div className="mt-4 pt-4 border-t border-[#8B4513] dark:border-[#A86A3D]">
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              Showing {filteredTransactions.length} of {transactions.length} transactions
+              {hasActiveFilters && ' (filtered)'}
+            </p>
+          </div>
+        </div>
+
+        {/* Transactions Table */}
         <div className="fox-card">
-          {transactions.length > 0 ? (
+          {filteredTransactions.length > 0 ? (
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
@@ -109,7 +288,7 @@ export default function TransactionsPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {transactions.map((transaction) => (
+                  {filteredTransactions.map((transaction) => (
                     <tr key={transaction.id} className="border-b border-[#8B4513] dark:border-[#A86A3D] last:border-0">
                       <td className="p-4">
                         {new Date(transaction.date).toLocaleDateString()}
@@ -166,15 +345,31 @@ export default function TransactionsPage() {
             </div>
           ) : (
             <div className="text-center py-12">
-              <p className="text-xl text-gray-600 dark:text-gray-400 mb-4">
-                No transactions yet
-              </p>
-              <Link 
-                href="/transactions/new" 
-                className="fox-button text-lg px-6 py-3 inline-block"
-              >
-                Add Your First Transaction
-              </Link>
+              {transactions.length === 0 ? (
+                <>
+                  <p className="text-xl text-gray-600 dark:text-gray-400 mb-4">
+                    No transactions yet
+                  </p>
+                  <Link 
+                    href="/transactions/new" 
+                    className="fox-button text-lg px-6 py-3 inline-block"
+                  >
+                    Add Your First Transaction
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <p className="text-xl text-gray-600 dark:text-gray-400 mb-4">
+                    No transactions match your filters
+                  </p>
+                  <button
+                    onClick={clearFilters}
+                    className="fox-button text-lg px-6 py-3"
+                  >
+                    Clear Filters
+                  </button>
+                </>
+              )}
             </div>
           )}
         </div>
