@@ -65,6 +65,57 @@ export async function GET() {
       }
     })
 
+        // Get monthly trend data (last 6 months)
+    const sixMonthsAgo = new Date()
+    sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6)
+    
+    const monthlyTrend = await prisma.transaction.groupBy({
+      by: ['date'],
+      where: {
+        userId: session.user.id,
+        date: {
+          gte: sixMonthsAgo
+        }
+      },
+      _sum: {
+        amount: true
+      }
+    })
+
+    // Transform monthly data for the chart
+    const monthlyData = monthlyTrend.reduce((acc: any[], item) => {
+      const monthYear = new Date(item.date).toLocaleString('default', { month: 'short', year: 'numeric' })
+      const existing = acc.find(m => m.month === monthYear)
+      
+      if (existing) {
+        if (item._sum.amount! > 0) {
+          existing.income += item._sum.amount!
+        } else {
+          existing.expenses += Math.abs(item._sum.amount!)
+        }
+      } else {
+        acc.push({
+          month: monthYear,
+          income: item._sum.amount! > 0 ? item._sum.amount! : 0,
+          expenses: item._sum.amount! < 0 ? Math.abs(item._sum.amount!) : 0
+        })
+      }
+      
+      return acc
+    }, [])
+
+    return NextResponse.json({
+      summary: {
+        income,
+        expenses,
+        balance: income - expenses
+      },
+      spendingByCategory,
+      recentTransactions,
+      budgets,
+      monthlyTrend: monthlyData
+    })
+
     // Get recent transactions (last 5)
     const recentTransactions = await prisma.transaction.findMany({
       where: { userId: session.user.id },
