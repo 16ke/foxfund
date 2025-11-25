@@ -194,7 +194,7 @@ export default function EditBudgetPage() {
               </label>
               <div className="relative">
                 <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-600 dark:text-gray-400 text-lg">
-                  $
+                  £ {/* CHANGED: $ to £ */}
                 </span>
                 <input
                   type="number"
@@ -272,7 +272,7 @@ export default function EditBudgetPage() {
                   </h3>
                 </div>
                 <p className="text-2xl font-bold text-[#8B4513] dark:text-[#E6C875]">
-                  ${parseFloat(formData.amount).toFixed(2)}
+                  £{parseFloat(formData.amount).toFixed(2)} {/* CHANGED: $ to £ */}
                 </p>
                 <p className="text-gray-600 dark:text-gray-400">
                   per {monthOptions.find(m => m.value === formData.month)?.label} {formData.year}

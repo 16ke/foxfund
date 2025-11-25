@@ -163,21 +163,21 @@ export default function DashboardPage() {
           <div className="fox-card text-center">
             <h3 className="text-2xl font-heading text-[#A86A3D] dark:text-[#E6C875]">Total Balance</h3>
             <p className={`text-3xl font-bold mt-2 ${summary.balance >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-              ${summary.balance.toFixed(2)}
+              £{summary.balance.toFixed(2)}
             </p>
           </div>
           
           <div className="fox-card text-center">
             <h3 className="text-2xl font-heading text-[#A86A3D] dark:text-[#E6C875]">Income</h3>
             <p className="text-3xl font-bold mt-2 text-green-600">
-              ${summary.income.toFixed(2)}
+              £{summary.income.toFixed(2)}
             </p>
           </div>
           
           <div className="fox-card text-center">
             <h3 className="text-2xl font-heading text-[#A86A3D] dark:text-[#E6C875]">Expenses</h3>
             <p className="text-3xl font-bold mt-2 text-red-600">
-              ${summary.expenses.toFixed(2)}
+              £{summary.expenses.toFixed(2)}
             </p>
           </div>
         </div>
@@ -209,7 +209,7 @@ export default function DashboardPage() {
                         {getStatusText(budget.status)}
                       </span>
                       <p className="text-xs text-gray-600 dark:text-gray-400">
-                        ${budget.spent.toFixed(2)} of ${budget.budgetAmount.toFixed(2)}
+                        £{budget.spent.toFixed(2)} of £{budget.budgetAmount.toFixed(2)}
                       </p>
                     </div>
                   </div>
@@ -223,8 +223,8 @@ export default function DashboardPage() {
                     />
                   </div>
                   <div className="flex justify-between text-xs text-gray-600 dark:text-gray-400">
-                    <span>Spent: ${budget.spent.toFixed(2)}</span>
-                    <span>Remaining: ${budget.remaining.toFixed(2)}</span>
+                    <span>Spent: £{budget.spent.toFixed(2)}</span>
+                    <span>Remaining: £{budget.remaining.toFixed(2)}</span>
                   </div>
                 </div>
               ))}
@@ -258,7 +258,7 @@ export default function DashboardPage() {
                       ))}
                     </Pie>
                     <Tooltip 
-                      formatter={(value: number) => [`$${value.toFixed(2)}`, 'Amount']}
+                      formatter={(value: number) => [`£${value.toFixed(2)}`, 'Amount']}
                       labelFormatter={(label) => `Category: ${label}`}
                     />
                     <Legend 
@@ -296,7 +296,7 @@ export default function DashboardPage() {
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="month" />
                     <YAxis />
-                    <Tooltip formatter={(value: number) => [`$${value.toFixed(2)}`, 'Amount']} />
+                    <Tooltip formatter={(value: number) => [`£${value.toFixed(2)}`, 'Amount']} />
                     <Legend />
                     <Line 
                       type="monotone" 
@@ -345,7 +345,7 @@ export default function DashboardPage() {
                     </p>
                   </div>
                   <p className={`text-lg font-bold ${transaction.type === 'income' ? 'text-green-600' : 'text-red-600'}`}>
-                    {transaction.type === 'income' ? '+' : '-'}${Math.abs(transaction.amount).toFixed(2)}
+                    {transaction.type === 'income' ? '+' : '-'}£{Math.abs(transaction.amount).toFixed(2)}
                   </p>
                 </div>
               ))}

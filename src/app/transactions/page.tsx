@@ -356,7 +356,7 @@ export default function TransactionsPage() {
                       </td>
                       <td className="p-4">
                         <span className={`text-lg font-bold ${transaction.type === 'income' ? 'text-green-600' : 'text-red-600'}`}>
-                          {transaction.type === 'income' ? '+' : '-'}${Math.abs(transaction.amount).toFixed(2)}
+                          {transaction.type === 'income' ? '+' : '-'}£{Math.abs(transaction.amount).toFixed(2)}
                         </span>
                       </td>
                       <td className="p-4">

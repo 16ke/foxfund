@@ -6,6 +6,7 @@ import { useSession, signOut } from 'next-auth/react'
 import { useState, useEffect } from 'react'
 import { Sun, Moon, LogOut, Menu, X, Home, CreditCard, Tags, Target, User } from 'lucide-react'
 import { useRouter } from 'next/navigation'
+import Logo from './Logo'
 
 export default function Navbar() {
   const { data: session } = useSession()
@@ -60,8 +61,8 @@ export default function Navbar() {
       <nav className="nav-bar">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center h-24 relative">
-            {/* Left Side - Menu & Theme Toggle */}
-            <div className="absolute left-4 flex items-center gap-3">
+            {/* Left Side - Menu & Theme Toggle (DESKTOP ONLY) */}
+            <div className="absolute left-4 flex items-center gap-3 hidden md:flex">
               {/* Hamburger Menu Button */}
               {session && (
                 <button
@@ -87,26 +88,28 @@ export default function Navbar() {
               </button>
             </div>
 
-            {/* Centered Title */}
+            {/* Centered Title with Logo */}
             <div className="flex-1 flex justify-center">
-              <Link href="/" className="no-underline hover:scale-105 transition-transform duration-200">
+              <Link href="/" className="no-underline hover:scale-105 transition-transform duration-200 flex items-center gap-4">
                 {/* Desktop */}
                 <div className="hidden md:flex items-center">
-                  <h1 className="nav-title-light dark:nav-title-dark text-6xl tracking-widest font-title">
+                  <Logo className="w-35 h-35" />
+                  <h1 className="nav-title-light dark:nav-title-dark text-6xl tracking-widest font-title ml-4">
                     FoxFund
                   </h1>
                 </div>
                 
                 {/* Mobile */}
                 <div className="flex md:hidden items-center">
-                  <h1 className="nav-title-light dark:nav-title-dark text-4xl tracking-widest font-title">
+                  <Logo className="w-28 h-28" />
+                  <h1 className="nav-title-light dark:nav-title-dark text-4xl tracking-widest font-title ml-2">
                     FoxFund
                   </h1>
                 </div>
               </Link>
             </div>
 
-            {/* Right Side - Logout */}
+            {/* Right Side - Logout (DESKTOP ONLY) - BACK TO ORIGINAL */}
             <div className="absolute right-4">
               {session && (
                 <>
@@ -119,22 +122,50 @@ export default function Navbar() {
                     <span>Logout</span>
                   </button>
                   
-                  {/* Mobile - Icon only */}
+                  {/* Mobile - Icon only (hidden since we moved it to sidebar) */}
                   <button
                     onClick={handleLogout}
                     className="md:hidden fox-button-icon"
                     aria-label="Logout"
+                    style={{ display: 'none' }} // Hide mobile logout from top navbar
                   >
                     <LogOut className="w-6 h-6" />
                   </button>
                 </>
               )}
             </div>
+
+            {/* Floating Mobile Controls (MOBILE ONLY) - MOVED UP */}
+            <div className="absolute left-2 bottom-0 transform translate-y-1/4 md:hidden flex flex-col items-center gap-1 z-40"> {/* CHANGED: translate-y-3/4 → translate-y-1/4 */}
+              {/* Theme Toggle - ABOVE */}
+              <button
+                onClick={toggleTheme}
+                className="theme-toggle shadow-lg"
+                aria-label="Toggle theme"
+              >
+                {darkMode ? (
+                  <Sun className="w-6 h-6" />
+                ) : (
+                  <Moon className="w-6 h-6" />
+                )}
+              </button>
+              
+              {/* Hamburger Menu Button - BELOW */}
+              {session && (
+                <button
+                  onClick={toggleSidebar}
+                  className="theme-toggle shadow-lg"
+                  aria-label="Toggle menu"
+                >
+                  <Menu className="w-6 h-6" />
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </nav>
 
-      {/* Sidebar - No overlay, just the sidebar */}
+      {/* Sidebar - No logout in desktop, only mobile */}
       <div className={`
         fixed top-0 left-0 h-full w-80 bg-[var(--nav-bg)] border-r-2 border-[var(--nav-border)] 
         transform transition-transform duration-300 ease-in-out z-50
@@ -174,12 +205,26 @@ export default function Navbar() {
                   </li>
                 )
               })}
+
+              {/* Logout in Sidebar (MOBILE ONLY) */}
+              <li className="md:hidden">
+                <button
+                  onClick={() => {
+                    handleLogout()
+                    setSidebarOpen(false)
+                  }}
+                  className="flex items-center gap-4 p-4 rounded-lg text-red-600 hover:bg-red-600 hover:text-white transition-colors group text-lg w-full text-left"
+                >
+                  <LogOut className="w-6 h-6 group-hover:scale-110 transition-transform" />
+                  <span className="font-button">Logout</span>
+                </button>
+              </li>
             </ul>
           </nav>
 
-          {/* User Info at Bottom */}
+          {/* User Info at Bottom (DESKTOP ONLY) */}
           {session && (
-            <div className="pt-6 border-t border-[#8B4513] dark:border-[#A86A3D]">
+            <div className="pt-6 border-t border-[#8B4513] dark:border-[#A86A3D] hidden md:block">
               <div className="flex items-center gap-3 p-3">
                 <div className="w-10 h-10 bg-[#8B4513] dark:bg-[#A86A3D] rounded-full flex items-center justify-center">
                   <span className="text-white font-bold">

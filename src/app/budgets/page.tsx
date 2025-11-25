@@ -155,7 +155,7 @@ export default function BudgetsPage() {
                       
                       <div className="text-right">
                         <p className="text-2xl font-bold text-[#8B4513] dark:text-[#E6C875]">
-                          ${budget.amount.toFixed(2)}
+                          £{budget.amount.toFixed(2)} {/* CHANGED: $ to £ */}
                         </p>
                         <p className="text-sm text-gray-600 dark:text-gray-400">
                           per month

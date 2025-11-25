@@ -39,7 +39,7 @@ export async function POST(request: Request) {
       data: {
         amount: type === 'expense' ? -Math.abs(amount) : Math.abs(amount),
         type,
-        currency: currency || 'USD',
+        currency: currency || 'GBP', // CHANGED: Default to GBP instead of USD
         date: new Date(date),
         description,
         merchant,

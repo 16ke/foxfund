@@ -19,7 +19,7 @@ export default function NewTransactionPage() {
   const [formData, setFormData] = useState({
     amount: '',
     type: 'expense',
-    currency: 'USD',
+    currency: 'GBP', // CHANGED: Default to GBP
     date: new Date().toISOString().split('T')[0],
     description: '',
     merchant: '',
@@ -154,9 +154,9 @@ export default function NewTransactionPage() {
                   onChange={handleChange}
                   className="fox-input"
                 >
+                  <option value="GBP">GBP (£)</option> {/* CHANGED: GBP first */}
                   <option value="USD">USD ($)</option>
                   <option value="EUR">EUR (€)</option>
-                  <option value="GBP">GBP (£)</option>
                 </select>
               </div>
             </div>
