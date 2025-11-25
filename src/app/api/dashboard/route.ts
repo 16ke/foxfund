@@ -65,7 +65,15 @@ export async function GET() {
       }
     })
 
-        // Get monthly trend data (last 6 months)
+    // Get recent transactions (last 5)
+    const recentTransactions = await prisma.transaction.findMany({
+      where: { userId: session.user.id },
+      include: { category: true },
+      orderBy: { date: 'desc' },
+      take: 5
+    })
+
+    // Get monthly trend data (last 6 months)
     const sixMonthsAgo = new Date()
     sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6)
     
@@ -114,25 +122,6 @@ export async function GET() {
       recentTransactions,
       budgets,
       monthlyTrend: monthlyData
-    })
-
-    // Get recent transactions (last 5)
-    const recentTransactions = await prisma.transaction.findMany({
-      where: { userId: session.user.id },
-      include: { category: true },
-      orderBy: { date: 'desc' },
-      take: 5
-    })
-
-    return NextResponse.json({
-      summary: {
-        income,
-        expenses,
-        balance: income - expenses
-      },
-      spendingByCategory,
-      recentTransactions,
-      budgets
     })
   } catch (error) {
     console.error('Dashboard data error:', error)
