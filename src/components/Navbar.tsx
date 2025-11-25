@@ -60,7 +60,7 @@ export default function Navbar() {
       <nav className="nav-bar">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center h-24 relative">
-            {/* Left Side - Theme Toggle & Menu */}
+            {/* Left Side - Menu & Theme Toggle */}
             <div className="absolute left-4 flex items-center gap-3">
               {/* Hamburger Menu Button */}
               {session && (
@@ -69,11 +69,7 @@ export default function Navbar() {
                   className="theme-toggle"
                   aria-label="Toggle menu"
                 >
-                  {sidebarOpen ? (
-                    <X className="w-6 h-6" />
-                  ) : (
-                    <Menu className="w-6 h-6" />
-                  )}
+                  <Menu className="w-6 h-6" />
                 </button>
               )}
               
@@ -141,23 +137,23 @@ export default function Navbar() {
       {/* Sidebar Overlay */}
       {sidebarOpen && (
         <div 
-          className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
+          className="fixed inset-0 bg-black bg-opacity-50 z-40"
           onClick={toggleSidebar}
         />
       )}
 
-      {/* Sidebar */}
+      {/* Sidebar - Overlay style */}
       <div className={`
-        fixed top-0 left-0 h-full w-64 bg-[var(--nav-bg)] border-r-2 border-[var(--nav-border)] 
+        fixed top-0 left-0 h-full w-80 bg-[var(--nav-bg)] border-r-2 border-[var(--nav-border)] 
         transform transition-transform duration-300 ease-in-out z-50
         ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
-        md:translate-x-0 md:static md:h-auto md:w-auto md:border-r-0
+        shadow-2xl
       `}>
         <div className="p-6 h-full flex flex-col">
-          {/* Close button for mobile */}
-          <div className="flex justify-between items-center mb-8 md:hidden">
-            <h2 className="text-xl font-heading text-[#A86A3D] dark:text-[#E6C875]">
-              Menu
+          {/* Header */}
+          <div className="flex justify-between items-center mb-8">
+            <h2 className="text-2xl font-heading text-[#A86A3D] dark:text-[#E6C875]">
+              Navigation
             </h2>
             <button
               onClick={toggleSidebar}
@@ -170,7 +166,7 @@ export default function Navbar() {
 
           {/* Navigation Items */}
           <nav className="flex-1">
-            <ul className="space-y-2">
+            <ul className="space-y-3">
               {navigationItems.map((item) => {
                 const Icon = item.icon
                 return (
@@ -178,9 +174,9 @@ export default function Navbar() {
                     <Link
                       href={item.href}
                       onClick={() => setSidebarOpen(false)}
-                      className="flex items-center gap-3 p-3 rounded-lg text-[#8B4513] dark:text-[#E6C875] hover:bg-[#8B4513] hover:text-white dark:hover:bg-[#A86A3D] dark:hover:text-white transition-colors group"
+                      className="flex items-center gap-4 p-4 rounded-lg text-[#8B4513] dark:text-[#E6C875] hover:bg-[#8B4513] hover:text-white dark:hover:bg-[#A86A3D] dark:hover:text-white transition-colors group text-lg"
                     >
-                      <Icon className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                      <Icon className="w-6 h-6 group-hover:scale-110 transition-transform" />
                       <span className="font-button">{item.label}</span>
                     </Link>
                   </li>
@@ -193,16 +189,16 @@ export default function Navbar() {
           {session && (
             <div className="pt-6 border-t border-[#8B4513] dark:border-[#A86A3D]">
               <div className="flex items-center gap-3 p-3">
-                <div className="w-8 h-8 bg-[#8B4513] dark:bg-[#A86A3D] rounded-full flex items-center justify-center">
-                  <span className="text-white text-sm font-bold">
+                <div className="w-10 h-10 bg-[#8B4513] dark:bg-[#A86A3D] rounded-full flex items-center justify-center">
+                  <span className="text-white font-bold">
                     {session.user?.name?.[0]?.toUpperCase() || session.user?.email?.[0]?.toUpperCase()}
                   </span>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-[#8B4513] dark:text-[#E6C875] truncate">
+                  <p className="font-medium text-[#8B4513] dark:text-[#E6C875] truncate">
                     {session.user?.name || 'User'}
                   </p>
-                  <p className="text-xs text-gray-600 dark:text-gray-400 truncate">
+                  <p className="text-sm text-gray-600 dark:text-gray-400 truncate">
                     {session.user?.email}
                   </p>
                 </div>

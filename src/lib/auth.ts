@@ -50,26 +50,20 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    session: ({ session, token }) => {
-      return {
-        ...session,
-        user: {
-          ...session.user,
-          id: token.id,
-        },
-      };
+    session: async ({ session, token }) => {
+      if (session?.user) {
+        session.user.id = token.sub!;
+      }
+      return session;
     },
-    jwt: ({ token, user }) => {
+    jwt: async ({ user, token }) => {
       if (user) {
-        return {
-          ...token,
-          id: user.id,
-        };
+        token.uid = user.id;
       }
       return token;
     },
   },
   pages: {
-    signIn: '/login', // Custom login page
+    signIn: '/login',
   },
 };
