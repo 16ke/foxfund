@@ -112,6 +112,43 @@ export async function GET() {
       return acc
     }, [])
 
+    // Calculate budget progress
+    const budgetProgress = await Promise.all(
+      budgets.map(async (budget) => {
+        const categorySpending = await prisma.transaction.aggregate({
+          where: {
+            userId: session.user.id,
+            categoryId: budget.categoryId,
+            type: 'expense',
+            date: {
+              gte: new Date(currentYear, currentMonth - 1, 1),
+              lt: new Date(currentYear, currentMonth, 1)
+            }
+          },
+          _sum: {
+            amount: true
+          }
+        })
+
+        const spent = Math.abs(categorySpending._sum.amount || 0)
+        const remaining = Math.max(0, budget.amount - spent)
+        const percentage = budget.amount > 0 ? (spent / budget.amount) * 100 : 0
+        const status = percentage >= 100 ? 'over' : percentage >= 80 ? 'warning' : 'good'
+
+        return {
+          budgetId: budget.id,
+          categoryId: budget.categoryId,
+          categoryName: budget.category.name,
+          categoryColor: budget.category.color,
+          budgetAmount: budget.amount,
+          spent,
+          remaining,
+          percentage: Math.min(100, percentage),
+          status
+        }
+      })
+    )
+
     return NextResponse.json({
       summary: {
         income,
@@ -121,7 +158,8 @@ export async function GET() {
       spendingByCategory,
       recentTransactions,
       budgets,
-      monthlyTrend: monthlyData
+      monthlyTrend: monthlyData,
+      budgetProgress
     })
   } catch (error) {
     console.error('Dashboard data error:', error)
