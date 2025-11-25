@@ -34,6 +34,17 @@ interface DashboardData {
     income: number
     expenses: number
   }>
+  budgetProgress: Array<{
+    budgetId: string
+    categoryId: string
+    categoryName: string
+    categoryColor: string
+    budgetAmount: number
+    spent: number
+    remaining: number
+    percentage: number
+    status: 'good' | 'warning' | 'over'
+  }>
 }
 
 export default function DashboardPage() {
@@ -58,7 +69,8 @@ export default function DashboardPage() {
           setData({
             ...dashboardData,
             spendingByCategory: transformedSpending,
-            monthlyTrend: dashboardData.monthlyTrend || []
+            monthlyTrend: dashboardData.monthlyTrend || [],
+            budgetProgress: dashboardData.budgetProgress || []
           })
         }
       } catch (error) {
@@ -81,11 +93,12 @@ export default function DashboardPage() {
     )
   }
 
-  const { summary, spendingByCategory, recentTransactions, monthlyTrend } = data || {
+  const { summary, spendingByCategory, recentTransactions, monthlyTrend, budgetProgress } = data || {
     summary: { income: 0, expenses: 0, balance: 0 },
     spendingByCategory: [],
     recentTransactions: [],
-    monthlyTrend: []
+    monthlyTrend: [],
+    budgetProgress: []
   }
 
   // Custom label for pie chart
@@ -115,6 +128,23 @@ export default function DashboardPage() {
 
   const hasSpendingData = spendingByCategory.some(item => item.amount > 0)
   const hasTrendData = monthlyTrend.some(item => item.income > 0 || item.expenses > 0)
+  const hasBudgetProgress = budgetProgress.length > 0
+
+  const getProgressBarColor = (status: string, categoryColor: string) => {
+    switch (status) {
+      case 'over': return '#EF4444' // Red
+      case 'warning': return '#F59E0B' // Amber
+      default: return categoryColor
+    }
+  }
+
+  const getStatusText = (status: string) => {
+    switch (status) {
+      case 'over': return 'Over Budget'
+      case 'warning': return 'Almost There'
+      default: return 'On Track'
+    }
+  }
 
   return (
     <div className="min-h-screen p-4">
@@ -151,6 +181,56 @@ export default function DashboardPage() {
             </p>
           </div>
         </div>
+
+        {/* Budget Progress Section */}
+        {hasBudgetProgress && (
+          <div className="fox-card mb-6">
+            <h3 className="text-2xl font-heading text-[#A86A3D] dark:text-[#E6C875] mb-4">
+              Budget Progress
+            </h3>
+            <div className="space-y-4">
+              {budgetProgress.map((budget) => (
+                <div key={budget.budgetId} className="space-y-2">
+                  <div className="flex justify-between items-center">
+                    <div className="flex items-center gap-2">
+                      <div 
+                        className="w-3 h-3 rounded-full"
+                        style={{ backgroundColor: budget.categoryColor }}
+                      />
+                      <span className="font-medium" style={{ color: budget.categoryColor }}>
+                        {budget.categoryName}
+                      </span>
+                    </div>
+                    <div className="text-right">
+                      <span className={`text-sm font-medium ${
+                        budget.status === 'over' ? 'text-red-600' : 
+                        budget.status === 'warning' ? 'text-amber-600' : 'text-green-600'
+                      }`}>
+                        {getStatusText(budget.status)}
+                      </span>
+                      <p className="text-xs text-gray-600 dark:text-gray-400">
+                        ${budget.spent.toFixed(2)} of ${budget.budgetAmount.toFixed(2)}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3">
+                    <div 
+                      className="h-3 rounded-full transition-all duration-300"
+                      style={{ 
+                        width: `${Math.min(100, budget.percentage)}%`,
+                        backgroundColor: getProgressBarColor(budget.status, budget.categoryColor)
+                      }}
+                    />
+                  </div>
+                  <div className="flex justify-between text-xs text-gray-600 dark:text-gray-400">
+                    <span>Spent: ${budget.spent.toFixed(2)}</span>
+                    <span>Remaining: ${budget.remaining.toFixed(2)}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Charts Row */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
