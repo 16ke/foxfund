@@ -2,6 +2,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts'
 
 interface DashboardData {
   summary: {
@@ -11,7 +12,9 @@ interface DashboardData {
   }
   spendingByCategory: Array<{
     categoryId: string | null
-    _sum: { amount: number | null }
+    categoryName: string
+    amount: number
+    color: string
   }>
   recentTransactions: Array<{
     id: string
@@ -26,6 +29,11 @@ interface DashboardData {
     amount: number
     category: { name: string; color: string }
   }>
+  monthlyTrend: Array<{
+    month: string
+    income: number
+    expenses: number
+  }>
 }
 
 export default function DashboardPage() {
@@ -38,7 +46,20 @@ export default function DashboardPage() {
         const response = await fetch('/api/dashboard')
         if (response.ok) {
           const dashboardData = await response.json()
-          setData(dashboardData)
+          
+          // Transform spendingByCategory for the chart
+          const transformedSpending = dashboardData.spendingByCategory.map((item: any) => ({
+            categoryId: item.categoryId,
+            categoryName: item.category?.name || 'Uncategorized',
+            amount: Math.abs(item._sum?.amount || 0),
+            color: item.category?.color || '#6B7280'
+          }))
+
+          setData({
+            ...dashboardData,
+            spendingByCategory: transformedSpending,
+            monthlyTrend: dashboardData.monthlyTrend || []
+          })
         }
       } catch (error) {
         console.error('Failed to fetch dashboard data:', error)
@@ -60,10 +81,40 @@ export default function DashboardPage() {
     )
   }
 
-  const { summary, recentTransactions } = data || {
+  const { summary, spendingByCategory, recentTransactions, monthlyTrend } = data || {
     summary: { income: 0, expenses: 0, balance: 0 },
-    recentTransactions: []
+    spendingByCategory: [],
+    recentTransactions: [],
+    monthlyTrend: []
   }
+
+  // Custom label for pie chart
+  const renderCustomizedLabel = ({
+    cx, cy, midAngle, innerRadius, outerRadius, percent, categoryName
+  }: any) => {
+    if (percent === 0) return null
+    
+    const RADIAN = Math.PI / 180
+    const radius = innerRadius + (outerRadius - innerRadius) * 0.5
+    const x = cx + radius * Math.cos(-midAngle * RADIAN)
+    const y = cy + radius * Math.sin(-midAngle * RADIAN)
+
+    return (
+      <text 
+        x={x} 
+        y={y} 
+        fill="white" 
+        textAnchor={x > cx ? 'start' : 'end'} 
+        dominantBaseline="central"
+        className="text-xs font-bold"
+      >
+        {`${(percent * 100).toFixed(0)}%`}
+      </text>
+    )
+  }
+
+  const hasSpendingData = spendingByCategory.some(item => item.amount > 0)
+  const hasTrendData = monthlyTrend.some(item => item.income > 0 || item.expenses > 0)
 
   return (
     <div className="min-h-screen p-4">
@@ -77,6 +128,7 @@ export default function DashboardPage() {
           </p>
         </div>
 
+        {/* Stats Cards Row */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <div className="fox-card text-center">
             <h3 className="text-2xl font-heading text-[#A86A3D] dark:text-[#E6C875]">Total Balance</h3>
@@ -100,22 +152,94 @@ export default function DashboardPage() {
           </div>
         </div>
 
+        {/* Charts Row */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Spending by Category Pie Chart */}
           <div className="fox-card">
-            <h3 className="text-2xl font-heading text-[#A86A3D] dark:text-[#E6C875] mb-4">Spending by Category</h3>
-            <div className="h-64 flex items-center justify-center text-gray-500">
-              {data?.spendingByCategory.length ? 'Pie Chart - Data Ready' : 'No spending data yet'}
-            </div>
+            <h3 className="text-2xl font-heading text-[#A86A3D] dark:text-[#E6C875] mb-4">
+              Spending by Category
+            </h3>
+            {hasSpendingData ? (
+              <div className="h-64">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={spendingByCategory.filter(item => item.amount > 0)}
+                      cx="50%"
+                      cy="50%"
+                      labelLine={false}
+                      label={renderCustomizedLabel}
+                      outerRadius={80}
+                      fill="#8884d8"
+                      dataKey="amount"
+                    >
+                      {spendingByCategory.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                    <Tooltip 
+                      formatter={(value: number) => [`$${value.toFixed(2)}`, 'Amount']}
+                      labelFormatter={(label) => `Category: ${label}`}
+                    />
+                    <Legend 
+                      formatter={(value, entry: any) => (
+                        <span style={{ color: entry.color, fontSize: '12px' }}>
+                          {value}
+                        </span>
+                      )}
+                    />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+            ) : (
+              <div className="h-64 flex flex-col items-center justify-center text-gray-500">
+                <div className="text-6xl mb-4">📊</div>
+                <p className="text-lg text-center">
+                  No spending data yet
+                </p>
+                <p className="text-sm text-center mt-2">
+                  Add some transactions to see your spending breakdown
+                </p>
+              </div>
+            )}
           </div>
           
+          {/* Monthly Trend Bar Chart */}
           <div className="fox-card">
-            <h3 className="text-2xl font-heading text-[#A86A3D] dark:text-[#E6C875] mb-4">Monthly Trend</h3>
-            <div className="h-64 flex items-center justify-center text-gray-500">
-              Line Chart - Coming Soon
-            </div>
+            <h3 className="text-2xl font-heading text-[#A86A3D] dark:text-[#E6C875] mb-4">
+              Monthly Trend
+            </h3>
+            {hasTrendData ? (
+              <div className="h-64">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={monthlyTrend}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="month" />
+                    <YAxis />
+                    <Tooltip 
+                      formatter={(value: number) => [`$${value.toFixed(2)}`, 'Amount']}
+                    />
+                    <Legend />
+                    <Bar dataKey="income" fill="#10B981" name="Income" />
+                    <Bar dataKey="expenses" fill="#EF4444" name="Expenses" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            ) : (
+              <div className="h-64 flex flex-col items-center justify-center text-gray-500">
+                <div className="text-6xl mb-4">📈</div>
+                <p className="text-lg text-center">
+                  No trend data yet
+                </p>
+                <p className="text-sm text-center mt-2">
+                  Add transactions over multiple months to see trends
+                </p>
+              </div>
+            )}
           </div>
         </div>
 
+        {/* Recent Transactions */}
         <div className="fox-card mt-6">
           <h3 className="text-2xl font-heading text-[#A86A3D] dark:text-[#E6C875] mb-4">Recent Transactions</h3>
           {recentTransactions.length > 0 ? (
