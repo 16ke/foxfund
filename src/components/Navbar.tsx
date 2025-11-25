@@ -134,15 +134,7 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {/* Sidebar Overlay */}
-      {sidebarOpen && (
-        <div 
-          className="fixed inset-0 bg-black bg-opacity-50 z-40"
-          onClick={toggleSidebar}
-        />
-      )}
-
-      {/* Sidebar - Overlay style */}
+      {/* Sidebar - No overlay, just the sidebar */}
       <div className={`
         fixed top-0 left-0 h-full w-80 bg-[var(--nav-bg)] border-r-2 border-[var(--nav-border)] 
         transform transition-transform duration-300 ease-in-out z-50
