@@ -191,12 +191,20 @@ export default function TransactionsPage() {
               Manage your income and expenses
             </p>
           </div>
-          <Link 
-            href="/transactions/new" 
-            className="fox-button text-lg px-6 py-3"
-          >
-            Add Transaction
-          </Link>
+          <div className="flex gap-3">
+            <Link 
+              href="/transactions/import" 
+              className="fox-button text-lg px-6 py-3 bg-[#FF8C42] hover:bg-[#E67A35] border-[#FF8C42]"
+            >
+              Import CSV
+            </Link>
+            <Link 
+              href="/transactions/new" 
+              className="fox-button text-lg px-6 py-3"
+            >
+              Add Transaction
+            </Link>
+          </div>
         </div>
 
         {/* Filters Section */}
@@ -387,12 +395,20 @@ export default function TransactionsPage() {
                   <p className="text-xl text-gray-600 dark:text-gray-400 mb-4">
                     No transactions yet
                   </p>
-                  <Link 
-                    href="/transactions/new" 
-                    className="fox-button text-lg px-6 py-3 inline-block"
-                  >
-                    Add Your First Transaction
-                  </Link>
+                  <div className="flex gap-3 justify-center">
+                    <Link 
+                      href="/transactions/import" 
+                      className="fox-button text-lg px-6 py-3 bg-[#FF8C42] hover:bg-[#E67A35] border-[#FF8C42]"
+                    >
+                      Import CSV
+                    </Link>
+                    <Link 
+                      href="/transactions/new" 
+                      className="fox-button text-lg px-6 py-3"
+                    >
+                      Add Transaction
+                    </Link>
+                  </div>
                 </>
               ) : (
                 <>
