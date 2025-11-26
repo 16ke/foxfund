@@ -2,6 +2,8 @@
 'use client'
 
 import { useSession } from 'next-auth/react'
+import Link from 'next/link'
+import { Share2, Users } from 'lucide-react'
 
 export default function ProfilePage() {
   const { data: session } = useSession()
@@ -69,9 +71,28 @@ export default function ProfilePage() {
                     <li>• Visual spending analytics</li>
                     <li>• CSV export functionality</li>
                     <li>• Dark/Light theme</li>
+                    <li>• Budget sharing</li>
                   </ul>
                 </div>
                 
+                {/* Shared Budgets Management */}
+                <div className="p-4 rounded-lg border-2 border-[#FF8C42] dark:border-[#FF9E64] bg-[#FF8C42] bg-opacity-10">
+                  <h4 className="font-heading text-[#A86A3D] dark:text-[#E6C875] mb-3 flex items-center gap-2">
+                    <Share2 className="w-5 h-5" />
+                    Shared Budgets
+                  </h4>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                    Manage budgets shared with other users and view budgets shared with you.
+                  </p>
+                  <Link 
+                    href="/budgets/shared" 
+                    className="fox-button text-sm px-4 py-2 w-full text-center flex items-center justify-center gap-2"
+                  >
+                    <Users className="w-4 h-4" />
+                    Manage Shared Budgets
+                  </Link>
+                </div>
+
                 <div className="p-4 rounded-lg border-2 border-green-600 bg-green-50 dark:bg-green-900/20">
                   <h4 className="font-heading text-green-800 dark:text-green-200 mb-2">
                     Getting Started

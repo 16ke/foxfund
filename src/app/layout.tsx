@@ -5,6 +5,7 @@ import { Sevillana, Courgette, Belgrano, Niconne } from 'next/font/google';
 import "./globals.css";
 import { AuthProvider } from "./providers";
 import Navbar from "@/components/Navbar";
+import ToastNotifications from "@/components/ToastNotifications";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -58,6 +59,7 @@ export default function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable} ${sevillana.variable} ${courgette.variable} ${belgrano.variable} ${niconne.variable} antialiased`}>
         <AuthProvider>
           <Navbar />
+          <ToastNotifications />
           {children}
         </AuthProvider>
       </body>

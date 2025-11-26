@@ -9,10 +9,10 @@ datasource db {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  email         String    @unique
+  id            String         @id @default(cuid())
+  email         String         @unique
   name          String?
-  password      String?   // For credential auth
+  password      String?        // For credential auth
   emailVerified DateTime?
   image         String?
   accounts      Account[]
@@ -20,8 +20,10 @@ model User {
   categories    Category[]
   transactions  Transaction[]
   budgets       Budget[]
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  sharedBudgets BudgetShare[]  // Budgets shared with this user
+  notifications Notification[] // User's notifications
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
 
   @@map("users")
 }
@@ -98,9 +100,39 @@ model Budget {
   category    Category @relation(fields: [categoryId], references: [id])
   userId      String
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sharedWith  BudgetShare[] // Users this budget is shared with
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  @@unique([categoryId, month, year])
+  @@unique([categoryId, month, year, userId])
   @@map("budgets")
+}
+
+model BudgetShare {
+  id        String   @id @default(cuid())
+  budgetId  String
+  budget    Budget   @relation(fields: [budgetId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  canEdit   Boolean  @default(false) // Permission to edit the shared budget
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([budgetId, userId])
+  @@map("budget_shares")
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      String   // "budget_shared", "budget_updated", etc.
+  title     String
+  message   String
+  data      Json?    // Additional data like budgetId, sharedById, etc.
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("notifications")
 }

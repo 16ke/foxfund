@@ -12,13 +12,62 @@ export async function GET() {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const budgets = await prisma.budget.findMany({
-      where: { userId: session.user.id },
-      include: { category: true },
-      orderBy: [{ year: 'desc' }, { month: 'desc' }]
-    })
+    // Get both owned budgets and shared budgets
+    const [ownedBudgets, sharedBudgets] = await Promise.all([
+      // Budgets created by the user
+      prisma.budget.findMany({
+        where: { userId: session.user.id },
+        include: { 
+          category: true,
+          sharedWith: {
+            include: {
+              user: {
+                select: { id: true, name: true, email: true }
+              }
+            }
+          }
+        },
+        orderBy: [{ year: 'desc' }, { month: 'desc' }]
+      }),
+      // Budgets shared with the user
+      prisma.budgetShare.findMany({
+        where: { userId: session.user.id },
+        include: {
+          budget: {
+            include: {
+              category: true,
+              user: {
+                select: { id: true, name: true, email: true }
+              },
+              sharedWith: {
+                include: {
+                  user: {
+                    select: { id: true, name: true, email: true }
+                  }
+                }
+              }
+            }
+          }
+        },
+        orderBy: [{ budget: { year: 'desc' } }, { budget: { month: 'desc' } }]
+      })
+    ])
 
-    return NextResponse.json(budgets)
+    // Transform shared budgets to match owned budget format with share info
+    const transformedSharedBudgets = sharedBudgets.map(share => ({
+      ...share.budget,
+      isShared: true,
+      sharedBy: share.budget.user,
+      canEdit: share.canEdit,
+      shareId: share.id
+    }))
+
+    const allBudgets = [
+      ...ownedBudgets.map(budget => ({ ...budget, isShared: false, canEdit: true })),
+      ...transformedSharedBudgets
+    ]
+
+    return NextResponse.json(allBudgets)
   } catch (error) {
     console.error('Get budgets error:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
@@ -35,14 +84,13 @@ export async function POST(request: Request) {
 
     const { amount, month, year, categoryId } = await request.json()
 
-    // Check if budget already exists for this category, month, and year
-    const existingBudget = await prisma.budget.findUnique({
+    // Check if budget already exists for this category, month, and year for this user
+    const existingBudget = await prisma.budget.findFirst({
       where: {
-        categoryId_month_year: {
-          categoryId,
-          month,
-          year
-        }
+        categoryId,
+        month: parseInt(month),
+        year: parseInt(year),
+        userId: session.user.id
       }
     })
 
@@ -61,10 +109,19 @@ export async function POST(request: Request) {
         categoryId,
         userId: session.user.id,
       },
-      include: { category: true }
+      include: { 
+        category: true,
+        sharedWith: {
+          include: {
+            user: {
+              select: { id: true, name: true, email: true }
+            }
+          }
+        }
+      }
     })
 
-    return NextResponse.json(budget)
+    return NextResponse.json({ ...budget, isShared: false, canEdit: true })
   } catch (error) {
     console.error('Create budget error:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
