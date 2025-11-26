@@ -52,6 +52,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="light">
+      <head>
+        <link rel="icon" href="/foxfund-logo.svg" type="image/svg+xml" />
+      </head>
       <body className={`${geistSans.variable} ${geistMono.variable} ${sevillana.variable} ${courgette.variable} ${belgrano.variable} ${niconne.variable} antialiased`}>
         <AuthProvider>
           <Navbar />
