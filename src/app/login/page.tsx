@@ -5,6 +5,7 @@ import { signIn } from 'next-auth/react'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import Logo from '@/components/Logo' // ADD THIS IMPORT
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
@@ -39,6 +40,11 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       {/* Main container with your theme */}
       <div className="fox-card max-w-md w-full p-8">
+        {/* Logo - Centered at top */}
+        <div className="flex justify-center mb-6"> {/* ADDED: Logo container */}
+          <Logo className="w-80 h-80" /> {/* Adjust size as needed */}
+        </div>
+        
         <div className="text-center">
           <h2 className="text-4xl font-heading text-[#8B4513] dark:text-[#E6C875]">
             Sign in to FoxFund
