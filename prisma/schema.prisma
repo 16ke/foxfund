@@ -1,4 +1,3 @@
-// file: prisma/schema.prisma
 generator client {
   provider = "prisma-client-js"
 }
@@ -20,6 +19,7 @@ model User {
   categories    Category[]
   transactions  Transaction[]
   budgets       Budget[]
+  goals         Goal[]         // NEW: User's monthly goals
   sharedBudgets BudgetShare[]  // Budgets shared with this user
   notifications Notification[] // User's notifications
   createdAt     DateTime       @default(now())
@@ -126,13 +126,32 @@ model Notification {
   id        String   @id @default(cuid())
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  type      String   // "budget_shared", "budget_updated", etc.
+  type      String   // "budget_shared", "budget_updated", "goal_achieved", etc.
   title     String
   message   String
-  data      Json?    // Additional data like budgetId, sharedById, etc.
+  data      Json?    // Additional data like budgetId, sharedById, goalId, etc.
   read      Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@map("notifications")
+}
+
+// NEW: Monthly Goals model
+model Goal {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title       String   // e.g., "Save for holiday", "Emergency fund"
+  targetAmount Float
+  currentAmount Float  @default(0)
+  month       Int      // 1-12
+  year        Int
+  completed   Boolean  @default(false)
+  completedAt DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([userId, month, year, title]) // One goal per title per month per user
+  @@map("goals")
 }
