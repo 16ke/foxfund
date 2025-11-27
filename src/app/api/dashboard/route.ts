@@ -1,4 +1,3 @@
-// file: src/app/api/dashboard/route.ts
 import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
@@ -49,8 +48,8 @@ export async function GET() {
       include: { category: true }
     })
 
-    // Get spending by category for current month
-    const spendingByCategory = await prisma.transaction.groupBy({
+    // Get spending by category for current month - FIXED VERSION
+    const spendingByCategoryRaw = await prisma.transaction.groupBy({
       by: ['categoryId'],
       where: {
         userId: session.user.id,
@@ -64,6 +63,47 @@ export async function GET() {
         amount: true
       }
     })
+
+    // Get all categories to map the category data
+    const categories = await prisma.category.findMany({
+      where: { userId: session.user.id }
+    })
+
+    // Transform spending data with category information
+    const spendingByCategory = spendingByCategoryRaw.map(item => {
+      const category = categories.find(cat => cat.id === item.categoryId)
+      return {
+        categoryId: item.categoryId,
+        categoryName: category?.name || 'Uncategorized',
+        amount: Math.abs(item._sum?.amount || 0),
+        color: category?.color || '#6B7280' // Default grey for uncategorized
+      }
+    })
+
+    // Add uncategorized transactions (transactions without category)
+    const uncategorizedSpending = await prisma.transaction.aggregate({
+      where: {
+        userId: session.user.id,
+        type: 'expense',
+        categoryId: null,
+        date: {
+          gte: new Date(currentYear, currentMonth - 1, 1),
+          lt: new Date(currentYear, currentMonth, 1)
+        }
+      },
+      _sum: {
+        amount: true
+      }
+    })
+
+    if (uncategorizedSpending._sum.amount && Math.abs(uncategorizedSpending._sum.amount) > 0) {
+      spendingByCategory.push({
+        categoryId: null,
+        categoryName: 'Uncategorized',
+        amount: Math.abs(uncategorizedSpending._sum.amount),
+        color: '#6B7280'
+      })
+    }
 
     // Get recent transactions (last 5)
     const recentTransactions = await prisma.transaction.findMany({

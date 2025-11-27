@@ -1,4 +1,3 @@
-// file: src/app/dashboard/page.tsx
 'use client'
 
 import { useEffect, useState } from 'react'
@@ -58,17 +57,9 @@ export default function DashboardPage() {
         if (response.ok) {
           const dashboardData = await response.json()
           
-          // Transform spendingByCategory for the chart
-          const transformedSpending = dashboardData.spendingByCategory.map((item: any) => ({
-            categoryId: item.categoryId,
-            categoryName: item.category?.name || 'Uncategorized',
-            amount: Math.abs(item._sum?.amount || 0),
-            color: item.category?.color || '#6B7280'
-          }))
-
+          // Use the spendingByCategory data directly from API (no transformation needed)
           setData({
             ...dashboardData,
-            spendingByCategory: transformedSpending,
             monthlyTrend: dashboardData.monthlyTrend || [],
             budgetProgress: dashboardData.budgetProgress || []
           })
@@ -101,9 +92,9 @@ export default function DashboardPage() {
     budgetProgress: []
   }
 
-  // Custom label for pie chart
+  // Custom label for pie chart - shows percentage
   const renderCustomizedLabel = ({
-    cx, cy, midAngle, innerRadius, outerRadius, percent, categoryName
+    cx, cy, midAngle, innerRadius, outerRadius, percent
   }: any) => {
     if (percent === 0) return null
     
@@ -259,12 +250,17 @@ export default function DashboardPage() {
                     </Pie>
                     <Tooltip 
                       formatter={(value: number) => [`£${value.toFixed(2)}`, 'Amount']}
-                      labelFormatter={(label) => `Category: ${label}`}
+                      labelFormatter={(label, payload) => {
+                        if (payload && payload[0]) {
+                          return `Category: ${payload[0].payload.categoryName}`
+                        }
+                        return `Category: ${label}`
+                      }}
                     />
                     <Legend 
                       formatter={(value, entry: any) => (
                         <span style={{ color: entry.color, fontSize: '12px' }}>
-                          {value}
+                          {entry.payload?.categoryName || value}
                         </span>
                       )}
                     />
