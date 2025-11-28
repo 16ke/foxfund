@@ -32,7 +32,7 @@ export default function RegisterPage() {
         const error = await response.json()
         alert(error.error || 'Registration failed')
       }
-    } catch (error) {
+    } catch {
       alert('Registration failed')
     } finally {
       setLoading(false)
