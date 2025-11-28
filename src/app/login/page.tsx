@@ -29,7 +29,7 @@ export default function LoginPage() {
       } else {
         router.push('/dashboard')
       }
-    } catch (error) {
+    } catch (_error) { // FIXED: unused variable
       alert('Login failed')
     } finally {
       setLoading(false)
@@ -41,7 +41,7 @@ export default function LoginPage() {
       {/* Main container with your theme */}
       <div className="fox-card max-w-md w-full p-8">
         {/* Logo - Centered at top */}
-        <div className="flex justify-center mb-6"> {/* ADDED: Logo container */}
+        <div className="flex justify-center mb-6">
           <Logo className="w-80 h-80" /> {/* Adjust size as needed */}
         </div>
         
@@ -94,8 +94,11 @@ export default function LoginPage() {
           </div>
         </form>
         <p className="text-center mt-6">
-          <Link href="/register" className="font-button text-[#8B4513] dark:text-[#E6C875] hover:text-[#FF8C42] dark:hover:text-[#FF9E64] transition-colors">
-            Don't have an account? Sign up
+          <Link
+            href="/register"
+            className="font-button text-[#8B4513] dark:text-[#E6C875] hover:text-[#FF8C42] dark:hover:text-[#FF9E64] transition-colors"
+          >
+            Don&apos;t have an account? Sign up
           </Link>
         </p>
       </div>
