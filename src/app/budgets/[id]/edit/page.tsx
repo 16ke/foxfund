@@ -30,10 +30,10 @@ export default function EditBudgetPage() {
     year: ''
   })
 
-  // Generate month options
+  // Generate month options (FIXED)
   const monthOptions = Array.from({ length: 12 }, (_, i) => ({
     value: (i + 1).toString(),
-    label: new Date().toLocaleString('default', { month: 'long' })
+    label: new Date(2000, i).toLocaleString('default', { month: 'long' })
   }))
 
   // Generate year options (current year and next year)
@@ -56,8 +56,8 @@ export default function EditBudgetPage() {
             year: budgetData.year.toString()
           })
         }
-      } catch (error) {
-        console.error('Failed to fetch budget:', error)
+      } catch (_error) { // FIXED
+        console.error('Failed to fetch budget')
       } finally {
         setLoading(false)
       }
@@ -88,7 +88,7 @@ export default function EditBudgetPage() {
         const error = await response.json()
         alert(error.error || 'Failed to update budget')
       }
-    } catch (error) {
+    } catch (_error) { // FIXED
       alert('Failed to update budget')
     } finally {
       setSaving(false)
@@ -111,7 +111,7 @@ export default function EditBudgetPage() {
         const error = await response.json()
         alert(error.error || 'Failed to delete budget')
       }
-    } catch (error) {
+    } catch (_error) { // FIXED
       alert('Failed to delete budget')
     }
   }
@@ -194,7 +194,7 @@ export default function EditBudgetPage() {
               </label>
               <div className="relative">
                 <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-600 dark:text-gray-400 text-lg">
-                  £ {/* CHANGED: $ to £ */}
+                  £
                 </span>
                 <input
                   type="number"
@@ -224,7 +224,7 @@ export default function EditBudgetPage() {
                 >
                   {monthOptions.map(month => (
                     <option key={month.value} value={month.value}>
-                      {new Date(parseInt(formData.year) || currentYear, parseInt(month.value) - 1).toLocaleString('default', { month: 'long' })}
+                      {month.label}
                     </option>
                   ))}
                 </select>
@@ -272,7 +272,7 @@ export default function EditBudgetPage() {
                   </h3>
                 </div>
                 <p className="text-2xl font-bold text-[#8B4513] dark:text-[#E6C875]">
-                  £{parseFloat(formData.amount).toFixed(2)} {/* CHANGED: $ to £ */}
+                  £{parseFloat(formData.amount).toFixed(2)}
                 </p>
                 <p className="text-gray-600 dark:text-gray-400">
                   per {monthOptions.find(m => m.value === formData.month)?.label} {formData.year}
