@@ -1,4 +1,3 @@
-// file: src/components/Navbar.tsx
 'use client'
 
 import Link from 'next/link'
@@ -13,7 +12,7 @@ interface Notification {
   type: string
   title: string
   message: string
-  data?: any
+  data?: Record<string, unknown>
   read: boolean
   createdAt: string
 }
