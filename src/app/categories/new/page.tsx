@@ -1,4 +1,3 @@
-// file: src/app/categories/new/page.tsx
 'use client'
 
 import { useState } from 'react'
@@ -46,7 +45,7 @@ export default function NewCategoryPage() {
         const error = await response.json()
         alert(error.error || 'Failed to create category')
       }
-    } catch (_error) {  // FIXED
+    } catch {
       alert('Failed to create category')
     } finally {
       setLoading(false)
