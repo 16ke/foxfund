@@ -1,4 +1,3 @@
-// file: src/app/transactions/new/page.tsx
 'use client'
 
 import { useState, useEffect } from 'react'
@@ -64,7 +63,7 @@ export default function NewTransactionPage() {
         const error = await response.json()
         alert(error.error || 'Failed to create transaction')
       }
-    } catch (error) {
+    } catch {
       alert('Failed to create transaction')
     } finally {
       setLoading(false)
