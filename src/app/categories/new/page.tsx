@@ -46,7 +46,7 @@ export default function NewCategoryPage() {
         const error = await response.json()
         alert(error.error || 'Failed to create category')
       }
-    } catch (error) {
+    } catch (_error) {  // FIXED
       alert('Failed to create category')
     } finally {
       setLoading(false)
