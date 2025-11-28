@@ -6,10 +6,11 @@ import { prisma } from '@/lib/prisma'
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions)
+    const { id } = await params
 
     if (!session?.user?.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -18,7 +19,7 @@ export async function GET(
     // Check if user owns the budget or has it shared
     const budget = await prisma.budget.findFirst({
       where: {
-        id: params.id,
+        id: id,
         OR: [
           { userId: session.user.id }, // User owns the budget
           { 
@@ -50,7 +51,7 @@ export async function GET(
     // Check if this is a shared budget and get permissions
     const budgetShare = await prisma.budgetShare.findFirst({
       where: {
-        budgetId: params.id,
+        budgetId: id,
         userId: session.user.id
       }
     })
@@ -71,10 +72,11 @@ export async function GET(
 
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions)
+    const { id } = await params
 
     if (!session?.user?.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -85,7 +87,7 @@ export async function PUT(
     // Check permissions - user must own budget or have edit permissions
     const budget = await prisma.budget.findFirst({
       where: {
-        id: params.id,
+        id: id,
         OR: [
           { userId: session.user.id }, // User owns the budget
           { 
@@ -105,7 +107,7 @@ export async function PUT(
     }
 
     const updatedBudget = await prisma.budget.update({
-      where: { id: params.id },
+      where: { id: id },
       data: {
         amount: parseFloat(amount),
         month: parseInt(month),
@@ -126,7 +128,7 @@ export async function PUT(
     // Check if this is a shared budget
     const budgetShare = await prisma.budgetShare.findFirst({
       where: {
-        budgetId: params.id,
+        budgetId: id,
         userId: session.user.id
       }
     })
@@ -147,10 +149,11 @@ export async function PUT(
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions)
+    const { id } = await params
 
     if (!session?.user?.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -159,7 +162,7 @@ export async function DELETE(
     // Only budget owner can delete (not shared users, even with edit permissions)
     const budget = await prisma.budget.findFirst({
       where: {
-        id: params.id,
+        id: id,
         userId: session.user.id // Must be the owner
       }
     })
@@ -169,7 +172,7 @@ export async function DELETE(
     }
 
     await prisma.budget.delete({
-      where: { id: params.id }
+      where: { id: id }
     })
 
     return NextResponse.json({ message: 'Budget deleted successfully' })
