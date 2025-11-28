@@ -1,4 +1,3 @@
-// file: src/app/transactions/[id]/edit/page.tsx
 'use client'
 
 import { useState, useEffect } from 'react'
@@ -98,7 +97,7 @@ export default function EditTransactionPage() {
         const error = await response.json()
         alert(error.error || 'Failed to update transaction')
       }
-    } catch (error) {
+    } catch {
       alert('Failed to update transaction')
     } finally {
       setSaving(false)
@@ -121,7 +120,7 @@ export default function EditTransactionPage() {
         const error = await response.json()
         alert(error.error || 'Failed to delete transaction')
       }
-    } catch (error) {
+    } catch {
       alert('Failed to delete transaction')
     }
   }
