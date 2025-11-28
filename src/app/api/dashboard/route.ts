@@ -131,7 +131,7 @@ export async function GET() {
     })
 
     // Transform monthly data for the chart
-    const monthlyData = monthlyTrend.reduce((acc: any[], item) => {
+    const monthlyData = monthlyTrend.reduce((acc: Array<{ month: string; income: number; expenses: number }>, item) => {
       const monthYear = new Date(item.date).toLocaleString('default', { month: 'short', year: 'numeric' })
       const existing = acc.find(m => m.month === monthYear)
       
