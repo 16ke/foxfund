@@ -1,4 +1,3 @@
-// file: src/components/NotificationBell.tsx
 'use client'
 
 import { useState, useEffect } from 'react'
@@ -9,7 +8,7 @@ interface Notification {
   type: string
   title: string
   message: string
-  data?: any
+  data?: Record<string, unknown>
   read: boolean
   createdAt: string
 }
