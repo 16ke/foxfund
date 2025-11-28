@@ -75,10 +75,10 @@ export default function NewBudgetPage() {
       if (response.ok) {
         router.push('/budgets')
       } else {
-        const error = await response.json()
-        alert(error.error || 'Failed to create budget')
+        const errorData = await response.json()
+        alert(errorData.error || 'Failed to create budget')
       }
-    } catch (error) {
+    } catch {
       alert('Failed to create budget')
     } finally {
       setLoading(false)
