@@ -5,10 +5,11 @@ import { prisma } from '@/lib/prisma'
 
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions)
+    const { id } = await params
 
     if (!session?.user?.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -18,7 +19,7 @@ export async function PUT(
 
     const goal = await prisma.goal.update({
       where: {
-        id: params.id,
+        id: id,
         userId: session.user.id // Ensure user owns this goal
       },
       data: {
@@ -53,10 +54,11 @@ export async function PUT(
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions)
+    const { id } = await params
 
     if (!session?.user?.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -64,7 +66,7 @@ export async function DELETE(
 
     await prisma.goal.delete({
       where: {
-        id: params.id,
+        id: id,
         userId: session.user.id // Ensure user owns this goal
       }
     })

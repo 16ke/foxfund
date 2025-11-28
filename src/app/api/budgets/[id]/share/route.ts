@@ -6,10 +6,11 @@ import { prisma } from '@/lib/prisma'
 
 export async function POST(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions)
+    const { id } = await params
 
     if (!session?.user?.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -24,7 +25,7 @@ export async function POST(
     // Verify the budget exists and belongs to the user
     const budget = await prisma.budget.findFirst({
       where: {
-        id: params.id,
+        id: id,
         userId: session.user.id // Only owner can share
       },
       include: { 
@@ -57,7 +58,7 @@ export async function POST(
     const existingShare = await prisma.budgetShare.findUnique({
       where: {
         budgetId_userId: {
-          budgetId: params.id,
+          budgetId: id,
           userId: userToShareWith.id
         }
       }
@@ -70,7 +71,7 @@ export async function POST(
     // Create the share
     const budgetShare = await prisma.budgetShare.create({
       data: {
-        budgetId: params.id,
+        budgetId: id,
         userId: userToShareWith.id,
         canEdit: Boolean(canEdit)
       },
@@ -115,10 +116,11 @@ export async function POST(
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions)
+    const { id } = await params
 
     if (!session?.user?.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -127,7 +129,7 @@ export async function GET(
     // Verify the budget exists and belongs to the user
     const budget = await prisma.budget.findFirst({
       where: {
-        id: params.id,
+        id: id,
         userId: session.user.id // Only owner can view shares
       }
     })
@@ -138,7 +140,7 @@ export async function GET(
 
     // Get all shares for this budget
     const shares = await prisma.budgetShare.findMany({
-      where: { budgetId: params.id },
+      where: { budgetId: id },
       include: {
         user: {
           select: { id: true, name: true, email: true }
