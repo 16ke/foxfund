@@ -1,8 +1,7 @@
-// file: src/components/ToastNotifications.tsx
 'use client'
 
-import { useEffect, useState } from 'react'
-import { X, Bell, CheckCircle, AlertCircle, Info } from 'lucide-react'
+import { useEffect, useState, useCallback } from 'react'
+import { X, CheckCircle, AlertCircle, Info } from 'lucide-react'
 
 interface ToastNotification {
   id: string
@@ -17,7 +16,7 @@ interface DatabaseNotification {
   type: string
   title: string
   message: string
-  data?: any
+  data?: Record<string, unknown>
   read: boolean
   createdAt: string
 }
@@ -25,15 +24,7 @@ interface DatabaseNotification {
 export default function ToastNotifications() {
   const [toasts, setToasts] = useState<ToastNotification[]>([])
 
-  useEffect(() => {
-    // Check for new notifications every 10 seconds
-    const interval = setInterval(checkForNewNotifications, 10000)
-    checkForNewNotifications() // Check immediately on mount
-    
-    return () => clearInterval(interval)
-  }, [])
-
-  const checkForNewNotifications = async () => {
+  const checkForNewNotifications = useCallback(async () => {
     try {
       const response = await fetch('/api/notifications')
       if (response.ok) {
@@ -56,7 +47,7 @@ export default function ToastNotifications() {
     } catch (error) {
       console.error('Failed to check notifications:', error)
     }
-  }
+  }, [toasts])
 
   const showToast = (toast: ToastNotification) => {
     setToasts(prev => [...prev, toast])
@@ -72,6 +63,14 @@ export default function ToastNotifications() {
   const removeToast = (id: string) => {
     setToasts(prev => prev.filter(toast => toast.id !== id))
   }
+
+  useEffect(() => {
+    // Check for new notifications every 10 seconds
+    const interval = setInterval(checkForNewNotifications, 10000)
+    checkForNewNotifications() // Check immediately on mount
+    
+    return () => clearInterval(interval)
+  }, [checkForNewNotifications])
 
   const getIcon = (type: string) => {
     switch (type) {
