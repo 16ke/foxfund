@@ -51,8 +51,8 @@ export default function EditCategoryPage() {
             color: categoryData.color
           })
         }
-      } catch (error) {
-        console.error('Failed to fetch category:', error)
+      } catch (err) {
+        console.error('Failed to fetch category:', err)
       } finally {
         setLoading(false)
       }
@@ -77,10 +77,10 @@ export default function EditCategoryPage() {
       if (response.ok) {
         router.push('/categories')
       } else {
-        const error = await response.json()
-        alert(error.error || 'Failed to update category')
+        const data = await response.json()
+        alert(data.error || 'Failed to update category')
       }
-    } catch (error) {
+    } catch {
       alert('Failed to update category')
     } finally {
       setSaving(false)
@@ -100,10 +100,10 @@ export default function EditCategoryPage() {
       if (response.ok) {
         router.push('/categories')
       } else {
-        const error = await response.json()
-        alert(error.error || 'Failed to delete category')
+        const data = await response.json()
+        alert(data.error || 'Failed to delete category')
       }
-    } catch (error) {
+    } catch {
       alert('Failed to delete category')
     }
   }
@@ -139,7 +139,10 @@ export default function EditCategoryPage() {
     <div className="min-h-screen p-4">
       <div className="max-w-2xl mx-auto">
         <div className="mb-8">
-          <Link href="/categories" className="text-[#F8F4E6] dark:text-[#E6C875] hover:text-[#FF8C42] dark:hover:text-[#FF9E64] transition-colors font-button">
+          <Link
+            href="/categories"
+            className="text-[#F8F4E6] dark:text-[#E6C875] hover:text-[#FF8C42] dark:hover:text-[#FF9E64] transition-colors font-button"
+          >
             ← Back to Categories
           </Link>
           <h1 className="text-4xl font-heading text-[#F8F4E6] dark:text-[#A86A3D] mt-4">
@@ -177,7 +180,9 @@ export default function EditCategoryPage() {
                       type="button"
                       onClick={() => setFormData(prev => ({ ...prev, color }))}
                       className={`w-12 h-12 rounded-full border-4 transition-all hover:scale-110 ${
-                        formData.color === color ? 'border-[#8B4513] dark:border-[#E6C875]' : 'border-gray-300 dark:border-gray-600'
+                        formData.color === color
+                          ? 'border-[#8B4513] dark:border-[#E6C875]'
+                          : 'border-gray-300 dark:border-gray-600'
                       }`}
                       style={{ backgroundColor: color }}
                       aria-label={`Select color ${color}`}
@@ -194,9 +199,9 @@ export default function EditCategoryPage() {
                 <p className="text-sm text-[#8B4513] dark:text-[#E6C875] text-center">
                   Preview: Your category will look like this
                 </p>
-                <div 
+                <div
                   className="mt-2 p-3 rounded-lg text-center font-heading text-lg font-bold"
-                  style={{ 
+                  style={{
                     backgroundColor: `${formData.color}20`,
                     color: formData.color,
                     border: `2px solid ${formData.color}`
@@ -226,7 +231,7 @@ export default function EditCategoryPage() {
               >
                 {saving ? 'Updating...' : 'Update Category'}
               </button>
-              
+
               <button
                 type="button"
                 onClick={handleDelete}
@@ -234,7 +239,7 @@ export default function EditCategoryPage() {
               >
                 Delete
               </button>
-              
+
               <Link
                 href="/categories"
                 className="px-8 py-3 border-2 border-[#8B4513] dark:border-[#A86A3D] text-[#F8F4E6] dark:text-[#E6C875] rounded-lg hover:bg-[#8B4513] hover:text-white dark:hover:bg-[#A86A3D] dark:hover:text-white transition-colors font-button text-lg"
