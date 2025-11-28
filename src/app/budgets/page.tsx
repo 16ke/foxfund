@@ -102,10 +102,10 @@ export default function BudgetsPage() {
           setBudgets(data)
         }
       } else {
-        const error = await response.json()
-        alert(error.error || 'Failed to delete budget')
+        const errorData = await response.json()
+        alert(errorData.error || 'Failed to delete budget')
       }
-    } catch (error) {
+    } catch {
       alert('Failed to delete budget')
     }
   }
@@ -130,7 +130,7 @@ export default function BudgetsPage() {
       })
 
       if (response.ok) {
-        const result = await response.json()
+        await response.json()
         alert(`Budget shared successfully with ${shareEmail}`)
         setSharingBudget(null)
         setShareEmail('')
@@ -143,10 +143,10 @@ export default function BudgetsPage() {
           setBudgets(data)
         }
       } else {
-        const error = await response.json()
-        alert(error.error || 'Failed to share budget')
+        const errorData = await response.json()
+        alert(errorData.error || 'Failed to share budget')
       }
-    } catch (error) {
+    } catch {
       alert('Failed to share budget')
     } finally {
       setShareLoading(false)
@@ -172,10 +172,10 @@ export default function BudgetsPage() {
           setBudgets(data)
         }
       } else {
-        const error = await response.json()
-        alert(error.error || 'Failed to remove budget access')
+        const errorData = await response.json()
+        alert(errorData.error || 'Failed to remove budget access')
       }
-    } catch (error) {
+    } catch {
       alert('Failed to remove budget access')
     }
   }
@@ -465,7 +465,7 @@ export default function BudgetsPage() {
                 Share Budget
               </h3>
               <p className="text-gray-600 dark:text-gray-400 mb-4">
-                Share "{sharingBudget.category.name}" budget with another user
+                Share &quot;{sharingBudget.category.name}&quot; budget with another user
               </p>
 
               <div className="space-y-4">
