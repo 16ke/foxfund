@@ -1,4 +1,3 @@
-// file: src/app/login/page.tsx
 'use client'
 
 import { signIn } from 'next-auth/react'
@@ -29,7 +28,7 @@ export default function LoginPage() {
       } else {
         router.push('/dashboard')
       }
-    } catch (_error) { // FIXED: unused variable
+    } catch {
       alert('Login failed')
     } finally {
       setLoading(false)
