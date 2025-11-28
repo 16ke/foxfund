@@ -6,10 +6,11 @@ import { prisma } from '@/lib/prisma'
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string; shareId: string } }
+  { params }: { params: Promise<{ id: string; shareId: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions)
+    const { id, shareId } = await params
 
     if (!session?.user?.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -18,13 +19,13 @@ export async function DELETE(
     // Verify the budget exists and belongs to the user OR the user is removing their own access
     const budget = await prisma.budget.findFirst({
       where: {
-        id: params.id,
+        id: id,
         OR: [
           { userId: session.user.id }, // User owns the budget
           { 
             sharedWith: {
               some: { 
-                id: params.shareId,
+                id: shareId,
                 userId: session.user.id // User is removing their own access
               }
             }
@@ -40,8 +41,8 @@ export async function DELETE(
     // Verify the share exists
     const share = await prisma.budgetShare.findFirst({
       where: {
-        id: params.shareId,
-        budgetId: params.id
+        id: shareId,
+        budgetId: id
       }
     })
 
@@ -51,7 +52,7 @@ export async function DELETE(
 
     // Delete the share
     await prisma.budgetShare.delete({
-      where: { id: params.shareId }
+      where: { id: shareId }
     })
 
     return NextResponse.json({ message: 'Budget access removed successfully' })
@@ -63,10 +64,11 @@ export async function DELETE(
 
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string; shareId: string } }
+  { params }: { params: Promise<{ id: string; shareId: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions)
+    const { id, shareId } = await params
 
     if (!session?.user?.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -77,7 +79,7 @@ export async function PUT(
     // Verify the budget exists and belongs to the user (only owner can update permissions)
     const budget = await prisma.budget.findFirst({
       where: {
-        id: params.id,
+        id: id,
         userId: session.user.id
       }
     })
@@ -89,8 +91,8 @@ export async function PUT(
     // Verify the share exists
     const share = await prisma.budgetShare.findFirst({
       where: {
-        id: params.shareId,
-        budgetId: params.id
+        id: shareId,
+        budgetId: id
       },
       include: {
         user: {
@@ -105,7 +107,7 @@ export async function PUT(
 
     // Update the share permissions
     const updatedShare = await prisma.budgetShare.update({
-      where: { id: params.shareId },
+      where: { id: shareId },
       data: { canEdit: Boolean(canEdit) },
       include: {
         user: {
