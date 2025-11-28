@@ -47,7 +47,7 @@ export async function POST(request: Request) {
         skip_empty_lines: true,
         trim: true,
       })
-    } catch (parseError) {
+    } catch {
       return NextResponse.json({ error: 'Invalid CSV format' }, { status: 400 })
     }
 
@@ -151,7 +151,7 @@ export async function POST(request: Request) {
 
         importedCount++
 
-      } catch (rowError) {
+      } catch {
         errors.push(`Row ${index + 2}: Processing error`)
       }
     }
