@@ -1,7 +1,7 @@
 // file: src/app/budgets/shared/page.tsx
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import { Share2, Users, Eye, Edit3, Trash2, UserX, Settings } from 'lucide-react'
 
@@ -51,26 +51,7 @@ export default function SharedBudgetsPage() {
   const [activeTab, setActiveTab] = useState<'shared-with-me' | 'shared-by-me' | 'shared-users'>('shared-with-me')
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    fetchBudgets()
-  }, [])
-
-  const fetchBudgets = async () => {
-    try {
-      const response = await fetch('/api/budgets')
-      if (response.ok) {
-        const budgetsData = await response.json()
-        setBudgets(budgetsData)
-        processSharedUsers(budgetsData)
-      }
-    } catch (error) {
-      console.error('Failed to fetch budgets:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const processSharedUsers = (budgetsData: Budget[]) => {
+  const processSharedUsers = useCallback((budgetsData: Budget[]) => {
     const userMap = new Map()
     
     // Process budgets shared by me
@@ -94,7 +75,26 @@ export default function SharedBudgetsPage() {
     })
 
     setSharedUsers(Array.from(userMap.values()))
-  }
+  }, [])
+
+  const fetchBudgets = useCallback(async () => {
+    try {
+      const response = await fetch('/api/budgets')
+      if (response.ok) {
+        const budgetsData = await response.json()
+        setBudgets(budgetsData)
+        processSharedUsers(budgetsData)
+      }
+    } catch (error) {
+      console.error('Failed to fetch budgets:', error)
+    } finally {
+      setLoading(false)
+    }
+  }, [processSharedUsers])
+
+  useEffect(() => {
+    fetchBudgets()
+  }, [fetchBudgets])
 
   const handleUnshareBudget = async (budgetId: string, shareId: string, userName: string) => {
     if (!confirm(`Are you sure you want to remove ${userName}'s access to this budget?`)) {
@@ -110,10 +110,10 @@ export default function SharedBudgetsPage() {
         alert('Budget access removed successfully')
         fetchBudgets()
       } else {
-        const error = await response.json()
-        alert(error.error || 'Failed to remove budget access')
+        const errorData = await response.json()
+        alert(errorData.error || 'Failed to remove budget access')
       }
-    } catch (error) {
+    } catch {
       alert('Failed to remove budget access')
     }
   }
@@ -132,10 +132,10 @@ export default function SharedBudgetsPage() {
         alert('You have left the shared budget')
         fetchBudgets()
       } else {
-        const error = await response.json()
-        alert(error.error || 'Failed to leave budget')
+        const errorData = await response.json()
+        alert(errorData.error || 'Failed to leave budget')
       }
-    } catch (error) {
+    } catch {
       alert('Failed to leave budget')
     }
   }
@@ -154,10 +154,10 @@ export default function SharedBudgetsPage() {
         alert(`Updated permissions for ${userName}`)
         fetchBudgets()
       } else {
-        const error = await response.json()
-        alert(error.error || 'Failed to update permissions')
+        const errorData = await response.json()
+        alert(errorData.error || 'Failed to update permissions')
       }
-    } catch (error) {
+    } catch {
       alert('Failed to update permissions')
     }
   }
@@ -322,7 +322,7 @@ export default function SharedBudgetsPage() {
           {activeTab === 'shared-by-me' && (
             <div>
               <h3 className="text-2xl font-heading text-[#A86A3D] dark:text-[#E6C875] mb-6">
-                Budgets You've Shared
+                Budgets You&apos;ve Shared
               </h3>
               {sharedByMe.length > 0 ? (
                 <div className="space-y-6">
@@ -389,7 +389,7 @@ export default function SharedBudgetsPage() {
                 <div className="text-center py-12">
                   <Share2 className="w-16 h-16 text-gray-400 mx-auto mb-4" />
                   <p className="text-xl text-gray-600 dark:text-gray-400 mb-4">
-                    You haven't shared any budgets yet
+                    You haven&apos;t shared any budgets yet
                   </p>
                   <Link 
                     href="/budgets" 
@@ -466,7 +466,7 @@ export default function SharedBudgetsPage() {
                 <div className="text-center py-12">
                   <Users className="w-16 h-16 text-gray-400 mx-auto mb-4" />
                   <p className="text-xl text-gray-600 dark:text-gray-400 mb-4">
-                    You're not sharing with any users yet
+                    You&apos;re not sharing with any users yet
                   </p>
                   <Link 
                     href="/budgets" 
