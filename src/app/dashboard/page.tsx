@@ -124,8 +124,8 @@ export default function DashboardPage() {
         setNewGoalAmount('')
         setShowGoalForm(false)
       } else {
-        const error = await response.json()
-        alert(error.error || 'Failed to create goal')
+        const errorData = await response.json()
+        alert(errorData.error || 'Failed to create goal')
       }
     } catch (error) {
       console.error('Failed to create goal:', error)
@@ -191,12 +191,17 @@ export default function DashboardPage() {
 
   // Auto-calculate goal progress from net income (balance)
   const netIncome = summary.balance
-  const activeGoals = goals.filter(goal => !goal.completed)
 
   // Custom label for pie chart - shows percentage
-  const renderCustomizedLabel = ({
-    cx, cy, midAngle, innerRadius, outerRadius, percent
-  }: any) => {
+  const renderCustomizedLabel = (props: {
+    cx: number
+    cy: number
+    midAngle: number
+    innerRadius: number
+    outerRadius: number
+    percent: number
+  }) => {
+    const { cx, cy, midAngle, innerRadius, outerRadius, percent } = props
     if (percent === 0) return null
     
     const RADIAN = Math.PI / 180
@@ -460,7 +465,7 @@ export default function DashboardPage() {
                       cx="50%"
                       cy="50%"
                       labelLine={false}
-                      label={renderCustomizedLabel}
+                      label={renderCustomizedLabel as never}
                       outerRadius={80}
                       fill="#8884d8"
                       dataKey="amount"
@@ -479,9 +484,9 @@ export default function DashboardPage() {
                       }}
                     />
                     <Legend 
-                      formatter={(value, entry: any) => (
-                        <span style={{ color: entry.color, fontSize: '12px' }}>
-                          {entry.payload?.categoryName || value}
+                      formatter={(value, entry) => (
+                        <span style={{ color: entry?.color || '#000', fontSize: '12px' }}>
+                          {(entry?.payload as { categoryName?: string })?.categoryName || value}
                         </span>
                       )}
                     />
