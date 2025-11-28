@@ -24,6 +24,21 @@ interface DatabaseNotification {
 export default function ToastNotifications() {
   const [toasts, setToasts] = useState<ToastNotification[]>([])
 
+  const removeToast = useCallback((id: string) => {
+    setToasts(prev => prev.filter(toast => toast.id !== id))
+  }, [])
+
+  const showToast = useCallback((toast: ToastNotification) => {
+    setToasts(prev => [...prev, toast])
+    
+    // Auto remove after duration
+    if (toast.duration) {
+      setTimeout(() => {
+        removeToast(toast.id)
+      }, toast.duration)
+    }
+  }, [removeToast])
+
   const checkForNewNotifications = useCallback(async () => {
     try {
       const response = await fetch('/api/notifications')
@@ -47,22 +62,7 @@ export default function ToastNotifications() {
     } catch (error) {
       console.error('Failed to check notifications:', error)
     }
-  }, [toasts])
-
-  const showToast = (toast: ToastNotification) => {
-    setToasts(prev => [...prev, toast])
-    
-    // Auto remove after duration
-    if (toast.duration) {
-      setTimeout(() => {
-        removeToast(toast.id)
-      }, toast.duration)
-    }
-  }
-
-  const removeToast = (id: string) => {
-    setToasts(prev => prev.filter(toast => toast.id !== id))
-  }
+  }, [toasts, showToast])
 
   useEffect(() => {
     // Check for new notifications every 10 seconds
