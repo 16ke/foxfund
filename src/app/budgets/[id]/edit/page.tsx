@@ -1,4 +1,3 @@
-// file: src/app/budgets/[id]/edit/page.tsx
 'use client'
 
 import { useState, useEffect } from 'react'
@@ -56,7 +55,7 @@ export default function EditBudgetPage() {
             year: budgetData.year.toString()
           })
         }
-      } catch (_error) { // FIXED
+      } catch {
         console.error('Failed to fetch budget')
       } finally {
         setLoading(false)
@@ -88,7 +87,7 @@ export default function EditBudgetPage() {
         const error = await response.json()
         alert(error.error || 'Failed to update budget')
       }
-    } catch (_error) { // FIXED
+    } catch {
       alert('Failed to update budget')
     } finally {
       setSaving(false)
@@ -111,7 +110,7 @@ export default function EditBudgetPage() {
         const error = await response.json()
         alert(error.error || 'Failed to delete budget')
       }
-    } catch (_error) { // FIXED
+    } catch {
       alert('Failed to delete budget')
     }
   }
