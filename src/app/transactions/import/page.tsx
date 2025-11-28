@@ -1,4 +1,3 @@
-// file: src/app/transactions/import/page.tsx
 'use client'
 
 import { useState } from 'react'
@@ -41,7 +40,7 @@ export default function ImportTransactionsPage() {
         const errorData = await response.json()
         setError(errorData.error || 'Failed to import transactions')
       }
-    } catch (error) {
+    } catch {
       setError('Failed to upload file. Please try again.')
     } finally {
       setLoading(false)
@@ -142,7 +141,7 @@ export default function ImportTransactionsPage() {
                   <li>• Required columns: date, amount, type</li>
                   <li>• Optional columns: description, merchant, category</li>
                   <li>• Date format: YYYY-MM-DD</li>
-                  <li>• Type: "income" or "expense"</li>
+                  <li>• Type: &quot;income&quot; or &quot;expense&quot;</li>
                   <li>• Amount: Positive numbers only</li>
                 </ul>
               </div>
@@ -202,7 +201,7 @@ export default function ImportTransactionsPage() {
                     Important Notes:
                   </h4>
                   <ul className="text-sm text-yellow-700 dark:text-yellow-300 space-y-1">
-                    <li>• Categories will be created if they don't exist</li>
+                    <li>• Categories will be created if they don&apos;t exist</li>
                     <li>• Duplicate transactions may be skipped</li>
                     <li>• Maximum file size: 5MB</li>
                     <li>• Transactions are imported for your account only</li>
