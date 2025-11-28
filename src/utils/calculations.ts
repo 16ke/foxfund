@@ -1,11 +1,21 @@
-// file: src/utils/calculations.ts
+interface Budget {
+  amount: number
+  categoryId: string
+}
+
+interface Transaction {
+  type: string
+  amount: number
+  categoryId?: string
+}
+
 export interface BudgetProgress {
   spent: number
   remaining: number
   percentage: number
 }
 
-export function calculateBudgetProgress(budget: any, transactions: any[]): BudgetProgress {
+export function calculateBudgetProgress(budget: Budget, transactions: Transaction[]): BudgetProgress {
   const expenseTransactions = transactions.filter(t => t.type === 'expense')
   const spent = Math.abs(expenseTransactions.reduce((sum, t) => sum + t.amount, 0))
   const remaining = Math.max(0, budget.amount - spent)
