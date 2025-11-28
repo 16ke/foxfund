@@ -1,9 +1,7 @@
-// file: src/app/transactions/page.tsx
 'use client'
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 
 interface Transaction {
   id: string
@@ -27,7 +25,6 @@ export default function TransactionsPage() {
   const [categories, setCategories] = useState<Category[]>([])
   const [filteredTransactions, setFilteredTransactions] = useState<Transaction[]>([])
   const [loading, setLoading] = useState(true)
-  const router = useRouter()
 
   // Filter states
   const [searchTerm, setSearchTerm] = useState('')
@@ -127,7 +124,7 @@ export default function TransactionsPage() {
         const error = await response.json()
         alert(error.error || 'Failed to delete transaction')
       }
-    } catch (error) {
+    } catch {
       alert('Failed to delete transaction')
     }
   }
@@ -155,7 +152,7 @@ export default function TransactionsPage() {
       } else {
         alert('Failed to export transactions')
       }
-    } catch (error) {
+    } catch {
       alert('Failed to export transactions')
     }
   }
