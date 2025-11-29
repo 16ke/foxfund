@@ -1,81 +1,152 @@
-# 🦊 FoxFund - Personal Budget Tracker
+# FoxFund - Budget Tracker
 
-A beautiful, full-stack budget tracking application built with modern technologies. Track your income, expenses, budgets, and savings goals with an intuitive interface and powerful visualizations.
+![FoxFund Logo](./public/foxfund-logo.svg)
 
-![Dashboard](/screenshots/dashboard-desktop.jpeg)
+A professional full-stack budget tracking application built with TypeScript that helps users manage expenses, track budgets, and achieve savings goals.
 
 ## 🚀 Live Demo
 
-**Experience the app live:** [foxfund.vercel.app](https://foxfund.vercel.app)
+[**View Live Application**](https://foxfund.vercel.app)
 
 **Demo Account:**
 - Email: `demo@foxfund.com`
 - Password: `demo123`
 
-## ✨ Features
+## 📋 Project Overview
 
-### Core Features
-- 🔐 **Authentication** - Secure sign up/login with NextAuth.js
-- 💰 **Transaction Management** - Add, edit, delete income & expenses
-- 🏷️ **Categories & Budgets** - Custom categories with monthly budget limits
-- 📊 **Dashboard Analytics** - Income vs expenses summary with charts
-- 🎯 **Spending Visualizations** - Pie charts by category, line charts for trends
-- 🔍 **Advanced Filtering** - Date range, category, and text search
-- 📱 **Responsive Design** - Mobile-first, desktop-optimized UI
-- 📤 **CSV Export** - Export transactions for any period
-- 🎨 **Demo Data** - Pre-loaded with realistic financial data
+FoxFund is a comprehensive budget tracking application that helps users take control of their finances by tracking income, expenses, budgets, and savings goals. The app features a beautiful fox-themed design with both light and dark modes.
 
-### Stretch Features
-- 🌙 **Dark/Light Mode** - Toggle between themes
-- 📥 **CSV Import** - Bulk import transactions
-- 🎯 **Monthly Goals** - Set and track savings targets
-- 👥 **Shared Budgets** - Collaborate on budgets with other users
-- 🔔 **In-app Notifications** - Real-time alerts and updates
-
-## 🛠️ Tech Stack
+## 🛠 Tech Stack
 
 **Frontend:**
-- Next.js 15.5.5 with App Router
-- React 19.1.0 + TypeScript
-- Tailwind CSS 4.0 with custom fox theme
-- Recharts 3.2.1 for data visualization
-- TanStack Query 5.90.5 for server state
+- Next.js 15 with TypeScript
+- TailwindCSS with custom fox theme
+- React Context for state management
+- Recharts for data visualization
+- Lucide React for icons
 
 **Backend:**
-- Next.js API Routes (TypeScript)
-- Prisma 6.17.1 ORM with TypeScript types
-- PostgreSQL (Neon serverless database)
-- NextAuth.js 4.24.11 for authentication
-- bcryptjs for password hashing
+- Next.js API Routes with TypeScript
+- PostgreSQL with Prisma ORM
+- NextAuth.js for authentication
+- Node.js runtime
 
-**Development:**
-- Jest for testing (10+ tests included)
-- ESLint + Prettier for code quality
-- TypeScript for type safety
+**External Services:**
+- Neon for PostgreSQL database
+- Vercel for deployment
+
+## ✨ Features
+
+- **User Authentication** - Secure login and registration with NextAuth
+- **Transaction Management** - Add, edit, delete income and expenses
+- **Category System** - Custom spending categories with color coding
+- **Budget Tracking** - Set monthly budgets with progress visualization
+- **Financial Dashboard** - Income vs expenses summary with interactive charts
+- **Advanced Filtering** - Date range, category, and text search
+- **CSV Import/Export** - Bulk transaction management
+- **Savings Goals** - Set and track monthly savings targets
+- **Shared Budgets** - Collaborate on budgets with other users
+- **Real-time Notifications** - In-app alerts for budget alerts and goal achievements
+- **Responsive Design** - Works perfectly on desktop and mobile devices
+- **Dark/Light Mode** - User preference support
 
 ## 📸 Screenshots
 
-| Dashboard Light | Dashboard Dark | Mobile View |
-|----------------|----------------|-------------|
-| ![Dashboard Light](/screenshots/dashboard-desktop.jpeg) | ![Dashboard Dark](/screenshots/dashboard-desktop-dark-mode.jpeg) | ![Mobile](/screenshots/dashboard-mobile.jpeg) |
+### Authentication
+| Login Page | Registration Page |
+|------------|-------------|
+| ![Login Page](./public/screenshots/login-desktop.jpeg) | ![Registration Page](./public/screenshots/registration-desktop.jpeg) |
 
-| Transactions | Budgets | Categories |
-|--------------|---------|------------|
-| ![Transactions](/screenshots/transactions-desktop.jpeg) | ![Budgets](/screenshots/budgets-desktop.jpeg) | ![Categories](/screenshots/categories-desktop.jpeg) |
+### Dashboard
+| Desktop Dashboard | Mobile Dashboard | Dark Mode |
+|------------------|------------------|-----------|
+| ![Dashboard Desktop](./public/screenshots/dashboard-desktop.jpeg) | ![Dashboard Mobile](./public/screenshots/dashboard-mobile.jpeg) | ![Dashboard Dark](./public/screenshots/dashboard-desktop-dark-mode.jpeg) |
 
-| Goals | Shared Budgets | Dark Mode |
-|-------|----------------|-----------|
-| ![Goals](/screenshots/add-transaction-desktop-dark-mode.jpeg) | ![Shared Budgets](/screenshots/shared-budgets-desktop.jpeg) | ![Dark Mode](/screenshots/categories-desktop-dark-mode.jpeg) |
+### Transactions
+| Desktop Transactions | Mobile Transactions | Dark Mode |
+|---------------------|---------------------|-----------|
+| ![Transactions Desktop](./public/screenshots/transactions-desktop.jpeg) | ![Transactions Mobile](./public/screenshots/transactions-mobile-dark-mode.jpeg) | ![Add Transaction Dark](./public/screenshots/add-transaction-desktop-dark-mode.jpeg) |
 
-## 🏃‍♂️ Quick Start
+### Budget Management
+| Desktop Budgets | Mobile Budgets | Shared Budgets |
+|-----------------|----------------|----------------|
+| ![Budgets Desktop](./public/screenshots/budgets-desktop.jpeg) | ![Budgets Mobile](./public/screenshots/budgets-mobile.jpeg) | ![Shared Budgets](./public/screenshots/shared-budgets-desktop.jpeg) |
+
+### Categories & Goals
+| Categories Desktop | Mobile Categories | Savings Goals |
+|-------------------|-------------------|---------------|
+| ![Categories Desktop](./public/screenshots/categories-desktop.jpeg) | ![Categories Mobile](./public/screenshots/categories-movile-dark-mode.jpeg) | ![Add Transaction](./public/screenshots/add-transaction-desktop-dark-mode.jpeg) |
+
+### User Management
+| User Profile | Mobile Profile | Dark Profile |
+|--------------|----------------|--------------|
+| ![Profile Desktop](./public/screenshots/profile-desktop.jpeg) | ![Profile Mobile](./public/screenshots/profile-mobile.jpeg) | ![Categories Dark](./public/screenshots/categories-desktop-dark-mode.jpeg) |
+
+## 🏗 Project Structure
+
+foxfund/
+├── src/
+│ ├── app/ # Next.js App Router pages
+│ │ ├── api/ # API routes (auth, transactions, budgets, goals)
+│ │ ├── dashboard/ # Main dashboard
+│ │ ├── transactions/ # Transaction management
+│ │ ├── budgets/ # Budget management
+│ │ ├── categories/ # Category management
+│ │ └── profile/ # User profile
+│ ├── components/ # Reusable React components
+│ ├── contexts/ # React context for state management
+│ └── lib/ # Utility libraries and services
+├── prisma/ # Database schema and migrations
+└── public/ # Static assets and screenshots
+
+
+## 🚀 Getting Started
 
 ### Prerequisites
-- Node.js 18+ 
-- PostgreSQL database (or SQLite for local development)
+- Node.js 18+
+- PostgreSQL database
 
 ### Installation
+1. Clone the repository
+2. Run `npm install` to install dependencies
+3. Set up environment variables in `.env.local` file
+4. Run `npx prisma generate && npx prisma db push` to set up database
+5. Run `npx prisma db seed` to load demo data
+6. Run `npm run dev` to start development server
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/your-username/foxfund.git
-   cd foxfund
+## 📊 Database Schema
+
+The application uses PostgreSQL with the following main models:
+- **User** - User accounts and authentication
+- **Transaction** - Income and expense records
+- **Category** - Spending categories with custom colors
+- **Budget** - Monthly budget limits per category
+- **Goal** - Monthly savings targets
+- **BudgetShare** - Shared budget permissions
+- **Notification** - User notifications
+
+## 🔌 API Endpoints
+
+- `POST /api/auth/*` - NextAuth authentication routes
+- `GET/POST /api/transactions` - Transaction management
+- `GET/POST /api/budgets` - Budget management
+- `GET/POST /api/goals` - Savings goals management
+- `GET/POST /api/categories` - Category management
+- `GET /api/dashboard` - Dashboard data aggregation
+- `GET /api/notifications` - User notifications
+
+## 🎯 Deployment
+
+The application is deployed on **Vercel** with a **PostgreSQL** database on **Neon**. The frontend, backend, and database are fully integrated and operational in production.
+
+## 💡 Learning Outcomes
+
+This project demonstrates full-stack TypeScript development with modern technologies including Next.js 15 App Router, Prisma ORM, advanced data visualization, real-time notifications, and complex relational database design.
+
+## 👨‍💻 Developer
+
+This project was developed as part of a full-stack developer portfolio showcasing modern web development skills with TypeScript, Next.js, and PostgreSQL.
+
+---
+
+*FoxFund - Take control of your finances with smart budgeting. 🦊*
